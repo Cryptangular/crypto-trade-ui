@@ -1,59 +1,92 @@
-# CryptoTradeUi
+# Crypto Trade UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.8.
+Frontend application for the Crypto Trade project, built with Angular.
+Crypto Trade is a trading platform clone where the user can browse market data, analyze charts, maintain a watchlist of favorite pairs, and execute test trades with virtual funds.
 
-## Development server
+The platform runs on top of Binance Spot Testnet — a fully functional Binance test environment that provides virtual funds upon registration. All data is virtual — no real money is involved.
 
-To start a local development server, run:
+## Team
 
-```bash
-ng serve
-```
+| Name              | Role                         | Github                                          | Development notes                         |
+| ----------------- | ---------------------------- | ----------------------------------------------- | ----------------------------------------- |
+| Aleksei Drob      | Fullstack Engineer           | [aliakseidrob](https://github.com/aliakseidrob) | [notes](./development-notes/aliakseidrob) |
+| Alexandr Zhdanko  | Fullstack Engineer           | [Zhdko](https://github.com/Zhdko)               | [notes](./development-notes/zhdko)        |
+| Anatoliy Rubankov | Fullstack Engineer           | [anatolirub](https://github.com/anatolirub)     | [notes](./development-notes/anatolirub)   |
+| Hanna Surmach     | Mentor and World's Best Boss | [khasekai](https://github.com/khasekai)         |                                           |
+| Raman Kamarou     | Our secret weapon            | [PoMaKoM](https://github.com/PoMaKoM)           |                                           |
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Kanban Board
 
-## Code scaffolding
+[Trello board](https://trello.com/b/tMcxfI8x/cryptotrade)
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Scripts
 
-```bash
-ng generate component component-name
-```
+| Script                 | Description                                                      |
+| ---------------------- | ---------------------------------------------------------------- |
+| `npm start`            | Starts the Angular development server via `ng serve`.            |
+| `npm run build`        | Builds the application for production.                           |
+| `npm run watch`        | Builds the app in watch mode with the development configuration. |
+| `npm run lint`         | Runs ESLint across the project.                                  |
+| `npm run lint:fix`     | Runs ESLint and applies automatic fixes where possible.          |
+| `npm run format`       | Formats the project with Prettier.                               |
+| `npm run format:check` | Checks formatting with Prettier without changing files.          |
+| `npm run ci:format`    | Verifies formatting in CI.                                       |
+| `npm test`             | Runs unit tests with Angular test tooling.                       |
+| `npm run coverage`     | Runs tests once and generates a coverage report.                 |
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Getting started
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+### 1. Install dependencies
 
 ```bash
-ng test
+npm install
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### 2. Run the app locally
 
 ```bash
-ng e2e
+npm start
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+By default, the development server is available at `http://localhost:4200/`.
 
-## Additional Resources
+## Development workflow
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- Use `npm start` for local development.
+- Use `npm run watch` when you want rebuilds on file changes without a full serve workflow.
+- Run `npm run lint` and `npm run format:check` before committing.
+- Run `npm test` for regular test execution.
+- Run `npm run coverage` to inspect test coverage.
+
+## Build
+
+Create a production build with:
+
+```bash
+npm run build
+```
+
+The build output is generated in the `dist/` directory.
+
+## Technologies
+
+| Software | Version |
+| -------- | ------- |
+| Angular  | 21.2.0  |
+| Husky    | 9.1.7   |
+| Prettier | 3.8.1   |
+| Vitest   | 4.0.8   |
+
+## Code quality
+
+This project uses:
+
+- ESLint for linting.
+- Prettier for formatting.
+- Husky for Git hooks.
+
+Recommended local check before pushing changes:
+
+```bash
+npm run lint && npm run format:check && npm test
+```
