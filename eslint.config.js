@@ -6,12 +6,15 @@ const angular = require('angular-eslint');
 
 module.exports = defineConfig([
   {
+    ignores: ['dist/**', 'coverage/**', '.angular/**', '.husky/**', 'node_modules/**'],
+  },
+  {
     files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
-      tseslint.configs.recommended,
-      tseslint.configs.stylistic,
-      angular.configs.tsRecommended,
+      ...tseslint.configs.recommended,
+      ...tseslint.configs.stylistic,
+      ...angular.configs.tsRecommended,
     ],
     processor: angular.processInlineTemplates,
     rules: {
@@ -37,8 +40,7 @@ module.exports = defineConfig([
       '@angular-eslint/prefer-signals': 'warn',
       '@angular-eslint/prefer-standalone': 'warn',
 
-      // TypeScript best practices
-      '@typescript-eslint/array-type': ['warn'],
+      '@typescript-eslint/array-type': 'warn',
       '@typescript-eslint/consistent-indexed-object-style': 'off',
       '@typescript-eslint/consistent-type-assertions': 'warn',
       '@typescript-eslint/consistent-type-definitions': ['warn', 'type'],
@@ -57,13 +59,19 @@ module.exports = defineConfig([
         },
       ],
       '@typescript-eslint/no-empty-function': 'off',
-      '@typescript-eslint/no-empty-interface': 'error',
+      '@typescript-eslint/no-empty-object-type': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-inferrable-types': 'warn',
       '@typescript-eslint/no-shadow': 'warn',
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+        },
+      ],
 
-      // JavaScript best practices
       eqeqeq: 'error',
       complexity: ['error', 20],
       curly: ['error', 'multi-line'],
@@ -74,16 +82,27 @@ module.exports = defineConfig([
         {
           code: 120,
           comments: 160,
+          ignoreUrls: true,
+          ignoreStrings: true,
+          ignoreTemplateLiterals: true,
         },
       ],
-      'max-lines': ['error', 400],
+      'max-lines': [
+        'error',
+        {
+          max: 400,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
       'no-bitwise': 'error',
       'no-console': 'off',
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
       'no-new-wrappers': 'error',
+      'no-restricted-syntax': 'off',
       'no-useless-concat': 'error',
       'no-var': 'error',
-      'no-restricted-syntax': 'off',
-      'no-shadow': 'error',
       'one-var': ['error', 'never'],
       'prefer-arrow-callback': 'error',
       'prefer-const': 'error',
@@ -95,17 +114,12 @@ module.exports = defineConfig([
           allowSeparatedGroups: true,
         },
       ],
-
-      // Security
-      'no-eval': 'error',
-      'no-implied-eval': 'error',
     },
   },
   {
     files: ['**/*.html'],
-    extends: [angular.configs.templateRecommended, angular.configs.templateAccessibility],
+    extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {
-      // Angular template best practices
       '@angular-eslint/template/attributes-order': [
         'error',
         {
