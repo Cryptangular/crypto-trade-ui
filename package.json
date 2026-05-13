@@ -11,6 +11,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "ci:format": "prettier --check .",
+    "test": "ng test",
     "ci:test": "ng test --watch=false",
     "precoverage": "node -e \"require('fs').mkdirSync('coverage/crypto-trade-ui/.tmp', {recursive: true})\"",
     "coverage": "ng test --no-watch --coverage",
