@@ -1,0 +1,15 @@
+@use '@angular/material' as mat;
+@use 'variables' as var;
+
+:host {
+  @include mat.button-overrides(
+    (
+      text-container-shape: var.$stx-btn-radius,
+    )
+  );
+  @include mat.icon-button-overrides(
+    (
+      container-shape: var.$stx-btn-radius,
+    )
+  );
+}

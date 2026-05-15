@@ -1,4 +1,4 @@
-@use 'fonts';
+@use 'variables' as var;
 
 @use '@angular/material' as mat;
 @use 'theme-colors' as theme;
@@ -14,8 +14,8 @@ html {
         tertiary: theme.$tertiary-palette,
       ),
       typography: (
-        brand-family: 'Saira Semi Condensed',
-        plain-family: 'Saira Semi Condensed',
+        brand-family: var.$base-font-family,
+        plain-family: var.$base-font-family,
       ),
       density: (
         scale: 0,

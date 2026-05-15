@@ -1,0 +1,16 @@
+@switch (btnConfig().appearance) { @case ('icon') {
+<button class="stx-button" matIconButton [disabled]="isDisabled()" [type]="type()" (click)="onClick($event)">
+  <mat-icon>{{btnConfig().icon}}</mat-icon>
+</button>
+} @default {
+<button
+  class="stx-button"
+  [disabled]="isDisabled()"
+  [matButton]="matButtonAppearance()"
+  [type]="type()"
+  (click)="onClick($event)">
+  @if(btnConfig().icon) {
+  <mat-icon>{{btnConfig().icon}}</mat-icon>
+  } {{btnConfig().label}}
+</button>
+}}
