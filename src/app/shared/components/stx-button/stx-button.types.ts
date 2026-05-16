@@ -1,6 +1,6 @@
 import { MatButtonAppearance } from '@angular/material/button';
 
-export enum Icons {
+export enum StxIcons {
   home = 'home',
   dashboard = 'dashboard',
   transfer = 'transfer',
@@ -8,20 +8,20 @@ export enum Icons {
   wallet = 'wallet',
 }
 
-type BtnAppearances = Exclude<MatButtonAppearance, 'filled' | 'tonal'>;
+type StxBtnAppearances = Extract<MatButtonAppearance, 'text' | 'outlined' | 'tonal'>;
 
-export type BtnType = 'button' | 'submit';
+export type StxBtnType = 'button' | 'submit';
 
-type IconBtnConfig = {
+type StxIconBtnConfig = {
   appearance: 'icon';
-  icon: Icons;
+  icon: StxIcons;
   label?: never;
 };
 
-type TextBtnConfig = {
-  appearance: BtnAppearances;
-  icon?: Icons;
+type StxTextBtnConfig = {
+  appearance: StxBtnAppearances;
+  icon?: StxIcons;
   label: string;
 };
 
-export type BtnConfig = IconBtnConfig | TextBtnConfig;
+export type StxBtnConfig = StxIconBtnConfig | StxTextBtnConfig;

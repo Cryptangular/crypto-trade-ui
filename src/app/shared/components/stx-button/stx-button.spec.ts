@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { StxButton } from './stx-button';
-import { BtnConfig, Icons } from './stx-button.types';
+import { StxBtnConfig, StxIcons } from './stx-button.types';
 
 describe('StxButton', () => {
   let component: StxButton;
@@ -20,7 +20,7 @@ describe('StxButton', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'text',
       label: 'Click me',
-    } as BtnConfig);
+    } as StxBtnConfig);
 
     fixture.detectChanges();
     expect(component).toBeTruthy();
@@ -29,8 +29,8 @@ describe('StxButton', () => {
   it('should render matIconButton when appearance is "icon"', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'icon',
-      icon: Icons.home,
-    } as BtnConfig);
+      icon: StxIcons.home,
+    } as StxBtnConfig);
 
     fixture.detectChanges();
 
@@ -38,7 +38,7 @@ describe('StxButton', () => {
     const iconEl = fixture.debugElement.query(By.css('mat-icon'));
 
     expect(buttonEl).toBeTruthy();
-    expect(iconEl.nativeElement.textContent.trim()).toBe(Icons.home);
+    expect(iconEl.nativeElement.textContent.trim()).toBe(StxIcons.home);
 
     const textButtonEl = fixture.debugElement.query(By.css('button[matButton]'));
     expect(textButtonEl).toBeNull();
@@ -48,7 +48,7 @@ describe('StxButton', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'text',
       label: 'Submit',
-    } as BtnConfig);
+    } as StxBtnConfig);
 
     fixture.detectChanges();
 
@@ -65,8 +65,8 @@ describe('StxButton', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'text',
       label: 'Dashboard',
-      icon: Icons.dashboard,
-    } as BtnConfig);
+      icon: StxIcons.dashboard,
+    } as StxBtnConfig);
 
     fixture.detectChanges();
 
@@ -76,14 +76,14 @@ describe('StxButton', () => {
     expect(buttonEl).toBeTruthy();
     expect(buttonEl.nativeElement.classList.contains('mat-mdc-button')).toBe(true);
     expect(iconEl).toBeTruthy();
-    expect(iconEl.nativeElement.textContent.trim()).toBe(Icons.dashboard);
+    expect(iconEl.nativeElement.textContent.trim()).toBe(StxIcons.dashboard);
   });
 
   it('should disabled the button when isDisabled input is true', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'text',
       label: 'Disabled Button',
-    } as BtnConfig);
+    } as StxBtnConfig);
 
     fixture.componentRef.setInput('isDisabled', true);
     fixture.detectChanges();
@@ -96,7 +96,7 @@ describe('StxButton', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'text',
       label: 'Action',
-    } as BtnConfig);
+    } as StxBtnConfig);
     fixture.detectChanges();
 
     const spy = vi.spyOn(component.clicked, 'emit');
