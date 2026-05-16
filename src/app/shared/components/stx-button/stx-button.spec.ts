@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { StxButton } from './stx-button';
 import { StxBtnConfig, StxIcons } from './stx-button.types';
+import { provideRouter } from '@angular/router';
 
 describe('StxButton', () => {
   let component: StxButton;
@@ -10,6 +11,7 @@ describe('StxButton', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [StxButton],
+      providers: [provideRouter([{ path: '**', redirectTo: '' }])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StxButton);
@@ -105,5 +107,41 @@ describe('StxButton', () => {
     buttonEl.triggerEventHandler('click', { stopPropagation: () => {} });
 
     expect(spy).toHaveBeenCalled();
+  });
+
+  it('should render an anchor tag with target="_blank" for external links', () => {
+    fixture.componentRef.setInput('btnConfig', {
+      appearance: 'text',
+      label: 'External Link',
+      href: 'https://google.com',
+    } as StxBtnConfig);
+
+    fixture.detectChanges();
+
+    const anchorEl = fixture.debugElement.query(By.css('a'));
+    const buttonEl = fixture.debugElement.query(By.css('button'));
+
+    expect(anchorEl).toBeTruthy();
+    expect(buttonEl).toBeNull();
+    expect(anchorEl.nativeElement.getAttribute('href')).toBe('https://google.com');
+    expect(anchorEl.nativeElement.getAttribute('target')).toBe('_blank');
+  });
+
+  it('should render an anchor tag without target="_blank" for internal router links', () => {
+    fixture.componentRef.setInput('btnConfig', {
+      appearance: 'text',
+      label: 'Internal Link',
+      href: '/dashboard',
+    } as StxBtnConfig);
+
+    fixture.detectChanges();
+
+    const anchorEl = fixture.debugElement.query(By.css('a'));
+    const buttonEl = fixture.debugElement.query(By.css('button'));
+
+    expect(anchorEl).toBeTruthy();
+    expect(buttonEl).toBeNull();
+    expect(anchorEl.nativeElement.getAttribute('href')).toBe('/dashboard');
+    expect(anchorEl.nativeElement.getAttribute('target')).toBeNull();
   });
 });
