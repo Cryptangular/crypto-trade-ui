@@ -1,1 +1,6 @@
-<p>stx-checkbox works!</p>
+<mat-checkbox
+  [checked]="checked()"
+  [disabled]="isDisabled()"
+  [labelPosition]="labelPosition()"
+  [required]="isRequired()"
+  (change)="onValueChange($event.checked)" />
