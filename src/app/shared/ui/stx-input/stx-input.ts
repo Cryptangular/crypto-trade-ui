@@ -23,7 +23,7 @@ export class StxInput<T = string> extends StxBaseControl<T> implements OnInit {
   readonly type = input<InputType>('text');
   readonly label = input.required<string>();
   readonly placeholder = input<string>('');
-  readonly icon = input<MaterialIcons | ''>('email');
+  readonly icon = input<MaterialIcons | ''>('');
 
   readonly customErrors = input<ValidationMessages>({});
 
