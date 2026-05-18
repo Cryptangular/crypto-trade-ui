@@ -40,18 +40,27 @@ export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
       this.control.setAsyncValidators(parentControl.asyncValidator);
       this.control.updateValueAndValidity({ emitEvent: false });
 
-      let wasTouched = false;
+      const originalMarkAsTouched = parentControl.markAsTouched.bind(parentControl);
+      parentControl.markAsTouched = (opts?: { onlySelf?: boolean }): void => {
+        originalMarkAsTouched(opts);
+        this.control.markAsTouched({ emitEvent: false });
+      };
+
+      const originalMarkAsUntouched = parentControl.markAsUntouched.bind(parentControl);
+      parentControl.markAsUntouched = (opts?: { onlySelf?: boolean }): void => {
+        originalMarkAsUntouched(opts);
+        this.control.markAsUntouched({ emitEvent: false });
+      };
       parentControl.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
         if (this.control.errors !== parentControl.errors) {
           this.control.setErrors(parentControl.errors);
         }
 
-        if (parentControl.touched && !wasTouched) {
-          this.control.markAsTouched();
-          wasTouched = true;
-        } else if (!parentControl.touched && wasTouched) {
-          this.control.markAsUntouched();
-          wasTouched = false;
+        if (parentControl.untouched && this.control.touched) {
+          this.control.markAsUntouched({ emitEvent: false });
+        }
+        if (parentControl.pristine && this.control.dirty) {
+          this.control.markAsPristine({ emitEvent: false });
         }
       });
     }
