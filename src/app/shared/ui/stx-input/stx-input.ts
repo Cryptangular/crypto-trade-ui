@@ -34,8 +34,4 @@ export class StxInput<T = string> extends StxBaseControl<T> implements OnInit {
     const value = this.trimmed() && typeof v === 'string' ? v.trim() : v;
     return value as T | null;
   }
-
-  override ngOnInit(): void {
-    super.ngOnInit();
-  }
 }
