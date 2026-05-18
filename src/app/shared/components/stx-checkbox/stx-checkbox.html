@@ -1,0 +1,7 @@
+<mat-checkbox
+  [checked]="checked()"
+  [disabled]="isDisabled()"
+  [labelPosition]="labelPosition()"
+  [required]="isRequired()"
+  (blur)="onTouched()"
+  (change)="onValueChange($event.checked)" />
