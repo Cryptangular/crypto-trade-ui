@@ -1,4 +1,4 @@
-import { DestroyRef, Directive, inject, OnInit, Optional, Self } from '@angular/core';
+import { DestroyRef, Directive, inject, OnInit } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { distinctUntilChanged, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -6,7 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 @Directive()
 export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
   protected readonly destroyRef = inject(DestroyRef);
-  @Optional() @Self() protected readonly ngControl = inject(NgControl, { optional: true });
+  protected readonly ngControl = inject(NgControl, { optional: true, self: true });
 
   readonly control = new FormControl<T | null>(null);
 
