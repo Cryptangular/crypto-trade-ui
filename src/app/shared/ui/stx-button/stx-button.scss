@@ -5,6 +5,8 @@
   @include mat.button-overrides(
     (
       text-container-shape: var.$stx-btn-radius,
+      tonal-container-shape: var.$stx-btn-radius,
+      outlined-container-shape: var.$stx-btn-radius,
     )
   );
   @include mat.icon-button-overrides(
@@ -12,4 +14,9 @@
       container-shape: var.$stx-btn-radius,
     )
   );
+}
+
+.stx-button {
+  display: block;
+  width: 100%;
 }
