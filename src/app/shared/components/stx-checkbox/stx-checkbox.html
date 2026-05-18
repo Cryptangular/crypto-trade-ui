@@ -3,4 +3,4 @@
   [disabled]="isDisabled()"
   [labelPosition]="labelPosition()"
   [required]="isRequired()"
-  (change)="onValueChange($event.checked)" />
+  (change)="checked.set($event.checked)" />
