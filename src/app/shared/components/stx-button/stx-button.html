@@ -1,0 +1,22 @@
+@if (isIconAppearance()) {
+<button matIconButton [disabled]="isDisabled()" [type]="type()" (click)="onClick($event)">
+  <mat-icon>{{ btnConfig().icon }} </mat-icon></button
+>} @else if(btnConfig().href && isExternalLink()) {
+<a target="_blank" [href]="btnConfig().href" [matButton]="matButtonAppearance()">
+  @if (btnConfig().icon) {
+  <mat-icon>{{ btnConfig().icon }}</mat-icon>
+  } {{ btnConfig().label }}
+</a>
+} @else if(btnConfig().href && !isExternalLink()) {
+<a [matButton]="matButtonAppearance()" [routerLink]="btnConfig().href">
+  @if (btnConfig().icon) {
+  <mat-icon>{{ btnConfig().icon }}</mat-icon>
+  } {{ btnConfig().label }}
+</a>
+} @else {
+<button [disabled]="isDisabled()" [matButton]="matButtonAppearance()" [type]="type()" (click)="onClick($event)">
+  @if (btnConfig().icon) {
+  <mat-icon>{{ btnConfig().icon }}</mat-icon>
+  } {{ btnConfig().label }}
+</button>
+}
