@@ -15,12 +15,12 @@ export class StxCheckbox implements ControlValueAccessor {
 
   readonly checked = model<boolean>(false);
 
-  readonly isDisabledInput = input<boolean>(false);
+  readonly disabled = input<boolean>(false);
   readonly isRequired = input<boolean>(false);
   readonly labelPosition = input<StxCheckboxLabelPosition>('after');
 
   private readonly isFormDisabled = signal<boolean>(false);
-  protected readonly isDisabled = (): boolean => this.isDisabledInput() || this.isFormDisabled();
+  protected readonly isDisabled = (): boolean => this.disabled() || this.isFormDisabled();
 
   protected onChange: (value: boolean) => void = () => {};
   protected onTouched: () => void = () => {};
