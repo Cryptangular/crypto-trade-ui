@@ -6,6 +6,7 @@ export enum StxIcons {
   transfer = 'transfer',
   card = 'card',
   wallet = 'wallet',
+  close = 'close',
 }
 
 type StxBtnAppearances = Extract<MatButtonAppearance, 'text' | 'outlined' | 'tonal'>;
