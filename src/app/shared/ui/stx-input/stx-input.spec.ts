@@ -3,9 +3,9 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { StxInput } from './stx-input';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { InputType } from '../../types/input';
+import { InputType } from './stx-input.types';
 import { By } from '@angular/platform-browser';
-import { waitForMicrotasks } from '../../utils/wait-for-microtask';
+import { waitForMicrotasks } from '../../utils/wait-for-microtasks';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

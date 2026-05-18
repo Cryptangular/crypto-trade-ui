@@ -3,7 +3,7 @@ import { StxBaseControl } from './stx-base-control';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { waitForMicrotasks } from '../utils/wait-for-microtask';
+import { waitForMicrotasks } from '../utils/wait-for-microtasks';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
