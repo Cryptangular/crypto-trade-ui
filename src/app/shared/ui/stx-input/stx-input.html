@@ -1,0 +1,20 @@
+<mat-form-field class="stx-input" [appearance]="appearance()">
+  @if(label()) {
+  <mat-label>{{ label() }}</mat-label>
+  }
+
+  <input
+    matInput
+    [formControl]="control"
+    [id]="id()"
+    [name]="name()"
+    [placeholder]="placeholder()"
+    [type]="type()"
+    (blur)="onTouched()" />
+
+  @if (icon()) {
+  <mat-icon aria-hidden="false" matSuffix [fontIcon]="icon()" />
+  } @if (ngControl?.invalid && (ngControl?.touched || ngControl?.dirty)) {
+  <mat-error>{{ ngControl?.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
+  }
+</mat-form-field>
