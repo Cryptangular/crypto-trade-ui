@@ -14,7 +14,6 @@
 
   @if (icon()) {
   <mat-icon aria-hidden="false" matSuffix [fontIcon]="icon()" />
-  } @if (ngControl?.invalid && (ngControl?.touched || ngControl?.dirty)) {
-  <mat-error>{{ ngControl?.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
   }
+  <mat-error>{{ ngControl?.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
 </mat-form-field>
