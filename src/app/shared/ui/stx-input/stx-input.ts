@@ -8,6 +8,8 @@ import { StxErrorMessagePipe } from '../../pipes/stx-error-message-pipe';
 import { ValidationMessages } from '../../types/validation';
 import { MatIcon } from '@angular/material/icon';
 import { MaterialIcons } from 'material-design-icons-literal-types';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { StxDefaultErrorStateMatcher } from './default-error-state-matcher';
 
 @Component({
   selector: 'stx-input',
@@ -24,6 +26,8 @@ export class StxInput<T = string> extends StxBaseControl<T> implements OnInit {
   readonly label = input.required<string>();
   readonly placeholder = input<string>('');
   readonly icon = input<MaterialIcons | ''>('');
+  readonly defaultErrorStateMatcher = new StxDefaultErrorStateMatcher();
+  readonly customErrorStateMatcher = input<ErrorStateMatcher>();
 
   readonly customErrors = input<ValidationMessages>({});
 

@@ -5,6 +5,7 @@
 
   <input
     matInput
+    [errorStateMatcher]="customErrorStateMatcher() || defaultErrorStateMatcher"
     [formControl]="control"
     [id]="id()"
     [name]="name()"
