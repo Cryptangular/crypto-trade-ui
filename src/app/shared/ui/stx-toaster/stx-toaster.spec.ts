@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { StxToaster } from './stx-toaster';
 import { ElementRef, signal, viewChild } from '@angular/core';
-import { beforeEach, describe, expect, it, Mock, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, Mock, vi } from 'vitest';
 import { ToastType } from '../../../../core/services/toast/toast-service.types';
 import { ToastService } from '../../../../core/services/toast/toast-service';
 
@@ -35,6 +35,10 @@ describe('TndmToaster', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('should toggle toast opened ID', () => {
     const mockEvent = { stopPropagation: vi.fn() } as unknown as Event;
 
@@ -56,16 +60,20 @@ describe('TndmToaster', () => {
   });
 
   it('should call service remove and reset ID if it was opened', () => {
+    vi.useFakeTimers();
     const mockEvent = { stopPropagation: vi.fn() } as unknown as Event;
     component.toggleToast(mockEvent, 5);
 
     component.onRemove(5);
+    vi.advanceTimersByTime(300);
 
     expect(mockToastService.remove).toHaveBeenCalledWith(5);
     expect(component['openedToastId']()).toBe(null);
   });
 
-  it('should scroll to bottom when toasts change', async () => {
+  it('should scroll to bottom when toasts change', () => {
+    vi.useFakeTimers();
+
     const mockElement = {
       scrollHeight: 1000,
       scrollTo: vi.fn(),
@@ -83,7 +91,7 @@ describe('TndmToaster', () => {
 
     fixture.detectChanges();
 
-    await new Promise(resolve => setTimeout(resolve, 0));
+    vi.advanceTimersByTime(0);
 
     expect(mockElement.scrollTo).toHaveBeenCalledWith({
       top: 1000,
@@ -92,7 +100,10 @@ describe('TndmToaster', () => {
   });
 
   it('should call removeAll on service', () => {
+    vi.useFakeTimers();
     component.onRemoveAll();
+    vi.runAllTimers();
+
     expect(mockToastService.removeAll).toHaveBeenCalled();
   });
 });

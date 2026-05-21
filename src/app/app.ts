@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { StxToaster } from './shared/components/stx-toaster/stx-toaster';
+import { StxToaster } from './shared/ui/stx-toaster/stx-toaster';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

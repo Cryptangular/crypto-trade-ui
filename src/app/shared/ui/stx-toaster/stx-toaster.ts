@@ -11,10 +11,12 @@ import {
   viewChild,
 } from '@angular/core';
 import { ToastService } from '../../../../core/services/toast/toast-service';
+import { StxButton } from '../stx-button/stx-button';
+import { StxBtnConfig } from '../stx-button/stx-button.types';
 
 @Component({
   selector: 'stx-toaster',
-  imports: [MatButtonModule, MatIconModule],
+  imports: [MatButtonModule, MatIconModule, StxButton],
   templateUrl: './stx-toaster.html',
   styleUrl: './stx-toaster.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,8 +24,19 @@ import { ToastService } from '../../../../core/services/toast/toast-service';
 export class StxToaster {
   protected readonly toast = inject(ToastService);
   protected readonly openedToastId = signal<number | null>(null);
+  protected readonly animatingToastIds = signal<number[]>([]);
+  protected readonly isClearingAll = signal(false);
 
   private readonly scrollContainer = viewChild<ElementRef<HTMLUListElement>>('scrollContainer');
+  protected readonly closeAllBtnConfig: StxBtnConfig = {
+    icon: 'close',
+    label: 'close all',
+    appearance: 'tonal',
+  };
+  protected readonly closeToastBtnConfig: StxBtnConfig = {
+    icon: 'close',
+    appearance: 'icon',
+  };
 
   constructor() {
     effect(() => {
@@ -55,10 +68,25 @@ export class StxToaster {
     if (this.openedToastId() === id) {
       this.openedToastId.set(null);
     }
-    this.toast.remove(id);
+
+    this.animatingToastIds.update(ids => [...ids, id]);
+
+    setTimeout(() => {
+      this.toast.remove(id);
+      this.animatingToastIds.update(ids => ids.filter(toastId => toastId !== id));
+    }, 300);
   }
 
   onRemoveAll(): void {
-    this.toast.removeAll();
+    if (this.openedToastId()) {
+      this.openedToastId.set(null);
+    }
+
+    this.isClearingAll.set(true);
+
+    setTimeout(() => {
+      this.toast.removeAll();
+      this.isClearingAll.set(false);
+    }, 300);
   }
 }

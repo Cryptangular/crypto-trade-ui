@@ -1,16 +1,17 @@
 @if (toast.shows()) {
-<aside class="toaster-container">
+<aside class="toaster-container" [class.is-clearing-all]="isClearingAll()">
   <ul #scrollContainer class="toaster">
     @for (item of toast.toasts(); track item.id) {
 
     <li
       tabindex="0"
       [class]="`toast toast_type_${item.state}`"
+      [class.is-removing]="animatingToastIds().includes(item.id)"
       (click)="toggleToast($event, item.id)"
       (keydown.enter)="toggleToast($event, item.id)">
       @if(item.options.icon) {
       <div class="icon-wrapper">
-        <mat-icon class="state-icon">{{item.state}}</mat-icon>
+        <mat-icon class="state-icon" [fontIcon]="item.state" />
       </div>
       }
 
@@ -21,13 +22,12 @@
         <p class="toast__message" [class.open]="openedToastId() === item.id">{{ item.message }}</p>
         }
       </div>
-      <button class="close-icon" matIconButton type="button" (click)="onRemove(item.id)">
-        <mat-icon>close_small</mat-icon>
-      </button>
+
+      <stx-button class="close-button" [btnConfig]="closeToastBtnConfig" (clicked)="onRemove(item.id)" />
     </li>
     }
   </ul>
-  <button class="close-all-toasts-button" matButton="tonal" type="button" (click)="onRemoveAll()">close all</button>
+  <stx-button class="close-all-toasts-button" [btnConfig]="closeAllBtnConfig" (clicked)="onRemoveAll()" />
 </aside>
 
 }
