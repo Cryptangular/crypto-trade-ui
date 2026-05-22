@@ -18,6 +18,8 @@ describe('TndmToaster', () => {
   let mockToastService: MockToastService;
 
   beforeEach(async () => {
+    vi.useRealTimers();
+
     mockToastService = {
       toasts: signal([]),
       shows: signal(false),
@@ -37,6 +39,7 @@ describe('TndmToaster', () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
   });
 
   it('should toggle toast opened ID', () => {
@@ -69,6 +72,8 @@ describe('TndmToaster', () => {
 
     expect(mockToastService.remove).toHaveBeenCalledWith(5);
     expect(component['openedToastId']()).toBe(null);
+
+    vi.useRealTimers();
   });
 
   it('should scroll to bottom when toasts change', () => {
@@ -97,6 +102,8 @@ describe('TndmToaster', () => {
       top: 1000,
       behavior: 'smooth',
     });
+
+    vi.useRealTimers();
   });
 
   it('should call removeAll on service', () => {
@@ -105,5 +112,7 @@ describe('TndmToaster', () => {
     vi.runAllTimers();
 
     expect(mockToastService.removeAll).toHaveBeenCalled();
+
+    vi.useRealTimers();
   });
 });
