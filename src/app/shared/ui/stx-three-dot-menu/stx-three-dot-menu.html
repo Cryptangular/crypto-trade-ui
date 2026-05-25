@@ -1,0 +1,11 @@
+<button mat-icon-button type="button" [disabled]="isDisabled()" [matMenuTriggerFor]="menu">
+  @if (icon()) {
+  <mat-icon [fontIcon]="icon()" />
+  }
+</button>
+
+<mat-menu #menu="matMenu" [xPosition]="xPosition()" [yPosition]="yPosition()">
+  @for (item of menuItemsList(); track item.label) {
+  <stx-menu-item [item]="item" />
+  }
+</mat-menu>
