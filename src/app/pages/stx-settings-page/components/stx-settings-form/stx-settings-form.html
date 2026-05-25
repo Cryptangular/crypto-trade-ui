@@ -1,0 +1,38 @@
+<mat-card class="setting-form__container">
+  <mat-card-header class="setting-form__header">
+    <mat-card-title>Settings</mat-card-title>
+    <stx-button [btnConfig]="{appearance: 'icon', icon: 'refresh'}" (clicked)="reset()" />
+  </mat-card-header>
+
+  <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+    <mat-card-content class="setting-form__content">
+      <stx-input
+        appearance="fill"
+        formControlName="api-key"
+        icon="password"
+        id="api-key"
+        label="API key"
+        name="api-key"
+        type="text" />
+
+      <stx-input
+        appearance="fill"
+        formControlName="security-key"
+        id="security-key"
+        label="Security key"
+        name="security-key"
+        [secret]="true"
+        [type]="'password'" />
+    </mat-card-content>
+
+    <mat-card-actions>
+      <stx-button
+        type="submit"
+        [btnConfig]="{ appearance: 'tonal', icon: 'send', label: 'send'}"
+        [isDisabled]="settingsForm.invalid"
+        >Сохранить</stx-button
+      >
+    </mat-card-actions>
+  </form>
+  <stx-three-dot-menu [isDisabled]="false" [menuItemsList]="threeDotMenuConfig" />
+</mat-card>
