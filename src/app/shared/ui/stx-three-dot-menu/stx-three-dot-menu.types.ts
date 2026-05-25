@@ -1,4 +1,3 @@
-import { StxBtnConfig } from '../stx-button/stx-button.types';
 import { MaterialIcons } from 'material-design-icons-literal-types';
 
 export type PosX = 'before' | 'after';
