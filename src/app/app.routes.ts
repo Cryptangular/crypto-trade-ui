@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
+import { APP_ROUTES } from './shared/constants/app-routes';
 
 export const routes: Routes = [
   {
@@ -19,5 +20,10 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./pages/auth/login-form/login-form').then(m => m.LoginForm),
+  },
+  {
+    path: APP_ROUTES.settings,
+    title: 'settings',
+    loadComponent: () => import('./pages/stx-settings-page/stx-settings-page').then(m => m.StxSettingsPage),
   },
 ];
