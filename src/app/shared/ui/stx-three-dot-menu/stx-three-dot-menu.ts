@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { StxMenuItem } from './stx-menu-item/stx-menu-item';
+import { StxMenuItem } from '../stx-menu-item/stx-menu-item';
 import { MenuItem, PosX, PosY } from './stx-three-dot-menu.types';
 import { MaterialIcons } from 'material-design-icons-literal-types';
 

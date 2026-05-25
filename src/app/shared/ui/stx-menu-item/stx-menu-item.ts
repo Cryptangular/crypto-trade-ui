@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { MenuItem } from '../stx-three-dot-menu.types';
+import { MenuItem } from '../stx-three-dot-menu/stx-three-dot-menu.types';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 
