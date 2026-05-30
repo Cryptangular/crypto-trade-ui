@@ -1,5 +1,8 @@
-@if (toast.shows()) {
-<aside class="toaster-container" [class.is-clearing-all]="isClearingAll()">
+<aside
+  class="toaster-container"
+  [class.is-clearing-all]="isClearingAll()"
+  [class.is-visible]="toast.shows()"
+  (transitionend)="onClearAllTransitionEnd($event)">
   <ul #scrollContainer class="toaster">
     @for (item of toast.toasts(); track item.id) {
 
@@ -8,7 +11,8 @@
       [class]="`toast toast_type_${item.state}`"
       [class.is-removing]="animatingToastIds().includes(item.id)"
       (click)="toggleToast($event, item.id)"
-      (keydown.enter)="toggleToast($event, item.id)">
+      (keydown.enter)="toggleToast($event, item.id)"
+      (transitionend)="onRemoveTransitionEnd($event, item.id)">
       @if(item.options.icon) {
       <div class="icon-wrapper">
         <mat-icon class="state-icon" [fontIcon]="item.state" />
@@ -27,7 +31,10 @@
     </li>
     }
   </ul>
-  <stx-button class="close-all-toasts-button" [btnConfig]="closeAllBtnConfig" (clicked)="onRemoveAll()" />
-</aside>
 
-}
+  <stx-button
+    class="close-all-toasts-button"
+    [btnConfig]="closeAllBtnConfig"
+    [class.is-visible]="toast.toasts().length > 1"
+    (clicked)="onRemoveAll()" />
+</aside>

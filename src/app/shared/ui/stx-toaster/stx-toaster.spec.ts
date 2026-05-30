@@ -12,7 +12,7 @@ type MockToastService = {
   removeAll: Mock;
 };
 
-describe('TndmToaster', () => {
+describe('StxToaster', () => {
   let component: StxToaster;
   let fixture: ComponentFixture<StxToaster>;
   let mockToastService: MockToastService;
@@ -31,6 +31,8 @@ describe('TndmToaster', () => {
       imports: [StxToaster],
       providers: [{ provide: ToastService, useValue: mockToastService }],
     }).compileComponents();
+
+    HTMLUListElement.prototype.scrollTo = vi.fn();
 
     fixture = TestBed.createComponent(StxToaster);
     component = fixture.componentInstance;
@@ -63,17 +65,19 @@ describe('TndmToaster', () => {
   });
 
   it('should call service remove and reset ID if it was opened', () => {
-    vi.useFakeTimers();
     const mockEvent = { stopPropagation: vi.fn() } as unknown as Event;
     component.toggleToast(mockEvent, 5);
 
     component.onRemove(5);
-    vi.advanceTimersByTime(300);
-
-    expect(mockToastService.remove).toHaveBeenCalledWith(5);
+    expect(component['animatingToastIds']()).toContain(5);
+    expect(mockToastService.remove).not.toHaveBeenCalled();
     expect(component['openedToastId']()).toBe(null);
 
-    vi.useRealTimers();
+    const transitionEvent = new TransitionEvent('transitionend', { propertyName: 'opacity' });
+    component.onRemoveTransitionEnd(transitionEvent, 5);
+
+    expect(mockToastService.remove).toHaveBeenCalledWith(5);
+    expect(component['animatingToastIds']()).not.toContain(5);
   });
 
   it('should scroll to bottom when toasts change', () => {
@@ -92,7 +96,7 @@ describe('TndmToaster', () => {
       mockSignal()
     );
 
-    mockToastService.toasts.set([{ id: 1, title: 'New Toast' }]);
+    mockToastService.toasts.set([{ id: 1, title: 'New Toast', state: 'check', options: { icon: false, duration: 0 } }]);
 
     fixture.detectChanges();
 
@@ -107,12 +111,14 @@ describe('TndmToaster', () => {
   });
 
   it('should call removeAll on service', () => {
-    vi.useFakeTimers();
     component.onRemoveAll();
-    vi.runAllTimers();
+    expect(component['isClearingAll']()).toBe(true);
+    expect(mockToastService.removeAll).not.toHaveBeenCalled();
+
+    const transitionEvent = new TransitionEvent('transitionend', { propertyName: 'opacity' });
+    component.onClearAllTransitionEnd(transitionEvent);
 
     expect(mockToastService.removeAll).toHaveBeenCalled();
-
-    vi.useRealTimers();
+    expect(component['isClearingAll']()).toBe(false);
   });
 });

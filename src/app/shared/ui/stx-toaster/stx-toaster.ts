@@ -1,9 +1,9 @@
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import {
+  afterRenderEffect,
   ChangeDetectionStrategy,
   Component,
-  effect,
   ElementRef,
   HostListener,
   inject,
@@ -28,6 +28,7 @@ export class StxToaster {
   protected readonly isClearingAll = signal(false);
 
   private readonly scrollContainer = viewChild<ElementRef<HTMLUListElement>>('scrollContainer');
+
   protected readonly closeAllBtnConfig: StxBtnConfig = {
     icon: 'close',
     label: 'close all',
@@ -39,18 +40,10 @@ export class StxToaster {
   };
 
   constructor() {
-    effect(() => {
+    afterRenderEffect(() => {
       this.toast.toasts();
       const el = this.scrollContainer()?.nativeElement;
-
-      if (el) {
-        setTimeout(() => {
-          el.scrollTo({
-            top: el.scrollHeight,
-            behavior: 'smooth',
-          });
-        });
-      }
+      el?.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
     });
   }
 
@@ -68,25 +61,29 @@ export class StxToaster {
     if (this.openedToastId() === id) {
       this.openedToastId.set(null);
     }
-
     this.animatingToastIds.update(ids => [...ids, id]);
+  }
 
-    setTimeout(() => {
-      this.toast.remove(id);
-      this.animatingToastIds.update(ids => ids.filter(toastId => toastId !== id));
-    }, 300);
+  onRemoveTransitionEnd(event: TransitionEvent, id: number): void {
+    if (event.propertyName !== 'opacity') return;
+    if (!this.animatingToastIds().includes(id)) return;
+
+    this.toast.remove(id);
+    this.animatingToastIds.update(ids => ids.filter(toastId => toastId !== id));
   }
 
   onRemoveAll(): void {
     if (this.openedToastId()) {
       this.openedToastId.set(null);
     }
-
     this.isClearingAll.set(true);
+  }
 
-    setTimeout(() => {
-      this.toast.removeAll();
-      this.isClearingAll.set(false);
-    }, 300);
+  onClearAllTransitionEnd(event: TransitionEvent): void {
+    if (event.propertyName !== 'opacity') return;
+    if (!this.isClearingAll()) return;
+
+    this.toast.removeAll();
+    this.isClearingAll.set(false);
   }
 }

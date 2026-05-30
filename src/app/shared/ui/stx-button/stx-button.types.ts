@@ -1,5 +1,5 @@
 import { MatButtonAppearance } from '@angular/material/button';
-import { MaterialIcons } from 'material-design-icons-literal-types';
+import { StxIcons } from '../../types/icon';
 
 type StxBtnAppearances = Extract<MatButtonAppearance, 'text' | 'outlined' | 'tonal'>;
 
@@ -7,14 +7,14 @@ export type StxBtnType = 'button' | 'submit';
 
 type StxIconBtnConfig = {
   appearance: 'icon';
-  icon: MaterialIcons;
+  icon: StxIcons;
   label?: never;
   href?: never;
 };
 
 type StxTextBtnConfig = {
   appearance: StxBtnAppearances;
-  icon?: MaterialIcons;
+  icon?: StxIcons;
   label: string;
   href?: string;
 };
