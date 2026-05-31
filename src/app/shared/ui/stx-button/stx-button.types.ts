@@ -1,13 +1,5 @@
 import { MatButtonAppearance } from '@angular/material/button';
-
-export enum StxIcons {
-  home = 'home',
-  dashboard = 'dashboard',
-  transfer = 'transfer',
-  card = 'card',
-  wallet = 'wallet',
-  close = 'close',
-}
+import { StxIcons } from '../../types/icon';
 
 type StxBtnAppearances = Extract<MatButtonAppearance, 'text' | 'outlined' | 'tonal'>;
 

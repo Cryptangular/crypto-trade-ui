@@ -1,8 +1,8 @@
 @use 'modern-normalize';
-@use 'variables' as var;
 
 @use '@angular/material' as mat;
 @use 'theme-colors' as theme;
+@use 'variables' as var;
 
 html {
   height: 100%;

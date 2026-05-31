@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { StxButton } from './stx-button';
-import { StxBtnConfig, StxIcons } from './stx-button.types';
+import { StxBtnConfig } from './stx-button.types';
 import { provideRouter } from '@angular/router';
 
 describe('StxButton', () => {
@@ -31,7 +31,7 @@ describe('StxButton', () => {
   it('should render matIconButton when appearance is "icon"', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'icon',
-      icon: StxIcons.home,
+      icon: 'home',
     } as StxBtnConfig);
 
     fixture.detectChanges();
@@ -40,7 +40,7 @@ describe('StxButton', () => {
     const iconEl = fixture.debugElement.query(By.css('mat-icon'));
 
     expect(buttonEl).toBeTruthy();
-    expect(iconEl.nativeElement.textContent.trim()).toBe(StxIcons.home);
+    expect(iconEl.nativeElement.textContent.trim()).toBe('home');
 
     const textButtonEl = fixture.debugElement.query(By.css('button[matButton]'));
     expect(textButtonEl).toBeNull();
@@ -67,7 +67,7 @@ describe('StxButton', () => {
     fixture.componentRef.setInput('btnConfig', {
       appearance: 'text',
       label: 'Dashboard',
-      icon: StxIcons.dashboard,
+      icon: 'dashboard',
     } as StxBtnConfig);
 
     fixture.detectChanges();
@@ -78,7 +78,7 @@ describe('StxButton', () => {
     expect(buttonEl).toBeTruthy();
     expect(buttonEl.nativeElement.classList.contains('mat-mdc-button')).toBe(true);
     expect(iconEl).toBeTruthy();
-    expect(iconEl.nativeElement.textContent.trim()).toBe(StxIcons.dashboard);
+    expect(iconEl.nativeElement.textContent.trim()).toBe('dashboard');
   });
 
   it('should disabled the button when isDisabled input is true', () => {

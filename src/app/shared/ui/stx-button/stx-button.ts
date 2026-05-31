@@ -32,6 +32,7 @@ export class StxButton {
   });
 
   onClick(event: MouseEvent): void {
+    event.stopPropagation();
     this.clicked.emit(event);
   }
 }
