@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { StxCheckbox } from './stx-checkbox';
 
 describe('StxCheckbox', () => {
@@ -13,7 +12,8 @@ describe('StxCheckbox', () => {
 
     fixture = TestBed.createComponent(StxCheckbox);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {
