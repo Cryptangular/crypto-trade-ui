@@ -1,0 +1,13 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <stx-input icon="mail" id="reg-email" label="Email" name="email" placeholder="example@domain.com" type="email" />
+
+  <stx-input icon="lock" id="reg-password" label="Password" name="password" placeholder="Password" type="password" />
+
+  <stx-input
+    icon="lock_reset"
+    id="reg-confirm-password"
+    label="Confirm password"
+    name="confirmPassword"
+    placeholder="Confirm password"
+    type="password" />
+</form>
