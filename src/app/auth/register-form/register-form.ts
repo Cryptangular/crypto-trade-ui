@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StxInput } from '../../shared/ui/stx-input/stx-input';
 import { StxButton } from '../../shared/ui/stx-button/stx-button';
+import { StxBtnConfig } from '../../shared/ui/stx-button/stx-button.types';
 
 @Component({
   selector: 'stx-register-form',
@@ -22,6 +23,17 @@ export class RegisterForm {
     password: ['', [Validators.required, Validators.minLength(8)]],
     confirmPassword: ['', [Validators.required]],
   });
+
+  protected readonly submitBtnConfig = signal<StxBtnConfig>({
+    label: 'Sign up',
+    appearance: 'text',
+  });
+
+  protected readonly loginLinkConfig: StxBtnConfig = {
+    label: 'Already have an account? Sign in',
+    appearance: 'text',
+    href: '/login',
+  };
 
   protected onSubmit(): void {}
 }
