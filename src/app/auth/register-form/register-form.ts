@@ -26,7 +26,7 @@ export class RegisterForm {
 
   protected readonly submitBtnConfig = signal<StxBtnConfig>({
     label: 'Sign up',
-    appearance: 'text',
+    appearance: 'tonal',
   });
 
   protected readonly loginLinkConfig: StxBtnConfig = {
