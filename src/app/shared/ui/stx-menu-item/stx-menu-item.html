@@ -1,18 +1,18 @@
-@if (item().children?.length) {
-<button mat-menu-item type="button" [disabled]="item().disabled" [matMenuTriggerFor]="submenu">
-  @if (item().icon) {
-  <mat-icon [fontIcon]="item().icon!" />
-  } {{ item().label }}
+@let it = item(); @if (isParent(it)) {
+<button mat-menu-item type="button" [disabled]="it.disabled" [matMenuTriggerFor]="submenu">
+  @if (it.icon) {
+  <mat-icon [fontIcon]="it.icon" />
+  } <span>{{ it.label }}</span>
 </button>
 <mat-menu #submenu="matMenu">
-  @for (child of item().children; track child.label) {
+  @for (child of it.children; track child.id) {
   <stx-menu-item [item]="child" />
   }
 </mat-menu>
 } @else {
-<button mat-menu-item type="button" [disabled]="item().disabled" (click)="item().click?.()">
-  @if (item().icon) {
-  <mat-icon [fontIcon]="item().icon!" />
-  } {{ item().label }}
+<button mat-menu-item type="button" [disabled]="it.disabled" (click)="it.click()">
+  @if (it.icon) {
+  <mat-icon [fontIcon]="it.icon" />
+  } <span>{{ it.label }}</span>
 </button>
 }

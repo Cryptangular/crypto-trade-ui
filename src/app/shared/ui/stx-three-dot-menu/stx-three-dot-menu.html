@@ -1,11 +1,11 @@
-<button mat-icon-button type="button" [disabled]="isDisabled()" [matMenuTriggerFor]="menu">
+<button aria-label="open menu" mat-icon-button type="button" [disabled]="isDisabled()" [matMenuTriggerFor]="menu">
   @if (icon()) {
   <mat-icon [fontIcon]="icon()" />
   }
 </button>
 
 <mat-menu #menu="matMenu" [xPosition]="xPosition()" [yPosition]="yPosition()">
-  @for (item of menuItemsList(); track item.label) {
+  @for (item of menuItemsList(); track item.id) {
   <stx-menu-item [item]="item" />
   }
 </mat-menu>
