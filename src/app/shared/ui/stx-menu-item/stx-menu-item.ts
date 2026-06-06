@@ -5,7 +5,7 @@ import { MenuItem, ParentMenuItem } from '../stx-three-dot-menu/stx-three-dot-me
 
 @Component({
   selector: 'stx-menu-item',
-  imports: [MatMenu, MatMenuItem, MatMenuTrigger, MatIcon, StxMenuItem],
+  imports: [MatMenu, MatMenuItem, MatMenuTrigger, MatIcon],
   templateUrl: './stx-menu-item.html',
   styleUrl: './stx-menu-item.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
