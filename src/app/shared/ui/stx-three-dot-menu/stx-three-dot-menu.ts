@@ -18,5 +18,5 @@ export class StxThreeDotMenu {
   readonly isDisabled = input(false);
   readonly xPosition = input<PosX>('after');
   readonly yPosition = input<PosY>('below');
-  readonly menuItemsList = input.required<MenuItem[]>();
+  readonly menuItemsList = input.required<readonly MenuItem[]>();
 }
