@@ -72,7 +72,7 @@ export class RegisterForm {
             this.router.navigate(['/stub-page']);
           },
           error: () => {
-            console.log('error');
+            this.toastService.danger('An unexpected error occurred', 'An unexpected error occurred');
           },
         });
     } else {

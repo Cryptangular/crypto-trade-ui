@@ -9,7 +9,7 @@ import { AuthResponse, SignUpRequest } from '../types/auth.types';
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/auth';
+  private readonly apiUrl = 'http://localhost:3000/api/auth';
 
   private readonly _currentUser = signal<User | null>(null);
 
@@ -35,15 +35,9 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    const errorMessage = 'An unexpected error occurred';
-    /*
-    if (error.error && error.error.message) {
-      errorMessage = error.error.message;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }*/
+    const errorStatus = error.status;
 
-    console.log(errorMessage);
+    console.log(errorStatus);
 
     return throwError(() => error);
   }
