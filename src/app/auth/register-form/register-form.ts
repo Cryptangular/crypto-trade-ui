@@ -1,5 +1,4 @@
-import { HttpClient } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StxInput } from '../../shared/ui/stx-input/stx-input';
@@ -13,8 +12,9 @@ import {
   PASSWORD_VALIDATION_MESSAGES,
 } from '../constants/errors.constants';
 import { ToastService } from '../../../core/services/toast/toast-service';
-import { Subject, takeUntil } from 'rxjs';
 import { AuthService } from '../services/auth-service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 @Component({
   selector: 'stx-register-form',
   imports: [ReactiveFormsModule, StxInput, StxButton],
@@ -24,12 +24,10 @@ import { AuthService } from '../services/auth-service';
 })
 export class RegisterForm {
   private readonly fb = inject(FormBuilder);
-  private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
-  private readonly apiUrl = '/api/auth';
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly emailErrors = EMAIL_VALIDATION_MESSAGES;
   protected readonly passwordErrors = PASSWORD_VALIDATION_MESSAGES;
@@ -66,13 +64,16 @@ export class RegisterForm {
           email: email!,
           password: password!,
         })
-        .pipe(takeUntil(this.destroy$))
+        .pipe(takeUntilDestroyed(this.destroyRef))
         .subscribe({
           next: () => {
             this.router.navigate(['/stub-page']);
           },
           error: (err: Error) => {
             this.toastService.danger('error occurred', err.message);
+            this.registerForm.patchValue({ password: '', confirmPassword: '' });
+            this.registerForm.get('password')?.markAsUntouched();
+            this.registerForm.get('confirmPassword')?.markAsUntouched();
           },
         });
     } else {

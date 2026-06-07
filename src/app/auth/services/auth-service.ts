@@ -1,9 +1,9 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
-import { User } from '../models/auth.models';
-import { AuthResponse, SignUpRequest } from '../types/auth.types';
+import { catchError, Observable, tap, throwError } from 'rxjs';
+import { AuthResponse, SignUpRequest, User } from '../types/auth.types';
 import { environment } from '../../../environments/environment';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({
   providedIn: 'root',
@@ -15,10 +15,10 @@ export class AuthService {
   private readonly _currentUser = signal<User | null>(null);
 
   readonly currentUser = this._currentUser.asReadonly();
+
   readonly isAuthenticated = computed(() => !!this._currentUser());
 
-  private readonly authStateSubject = new BehaviorSubject<boolean>(false);
-  readonly authState$ = this.authStateSubject.asObservable();
+  readonly isAuthenticated$ = toObservable(this.isAuthenticated);
 
   signUp(data: SignUpRequest): Observable<AuthResponse> {
     return this.http
@@ -28,8 +28,6 @@ export class AuthService {
       .pipe(
         tap(user => {
           this._currentUser.set(user);
-          this.authStateSubject.next(true);
-          console.log('Account created successfully!');
         }),
         catchError(error => this.handleError(error))
       );
