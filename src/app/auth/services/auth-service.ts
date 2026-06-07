@@ -3,13 +3,14 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { User } from '../models/auth.models';
 import { AuthResponse, SignUpRequest } from '../types/auth.types';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3000/api/auth';
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly _currentUser = signal<User | null>(null);
 
@@ -35,10 +36,25 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    const errorStatus = error.status;
+    let errorMessage = 'An unexpected error occurred';
 
-    console.log(errorStatus);
-
-    return throwError(() => error);
+    if (error.status === 0) {
+      errorMessage = 'Network error: Please check your internet connection.';
+    } else {
+      switch (error.status) {
+        case 429:
+          errorMessage = 'Too many requests. Please try again later.';
+          break;
+        case 500:
+          errorMessage = 'Internal server error. Something went wrong on our end.';
+          break;
+        case 409:
+          errorMessage = 'An account with this email address already exists.';
+          break;
+        default:
+          errorMessage = error.error?.message || error.message || errorMessage;
+      }
+    }
+    return throwError(() => new Error(errorMessage));
   }
 }

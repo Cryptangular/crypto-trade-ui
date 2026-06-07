@@ -71,8 +71,8 @@ export class RegisterForm {
           next: () => {
             this.router.navigate(['/stub-page']);
           },
-          error: () => {
-            this.toastService.danger('An unexpected error occurred', 'An unexpected error occurred');
+          error: (err: Error) => {
+            this.toastService.danger('error occurred', err.message);
           },
         });
     } else {
