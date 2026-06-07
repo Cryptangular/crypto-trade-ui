@@ -12,6 +12,9 @@ import {
   EMAIL_VALIDATION_MESSAGES,
   PASSWORD_VALIDATION_MESSAGES,
 } from '../constants/errors.constants';
+import { ToastService } from '../../../core/services/toast/toast-service';
+import { Subject, takeUntil } from 'rxjs';
+import { AuthService } from '../services/auth-service';
 @Component({
   selector: 'stx-register-form',
   imports: [ReactiveFormsModule, StxInput, StxButton],
@@ -20,9 +23,13 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class RegisterForm {
-  private fb = inject(FormBuilder);
-  private http = inject(HttpClient);
-  private router = inject(Router);
+  private readonly fb = inject(FormBuilder);
+  private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
+  private readonly apiUrl = '/api/auth';
+  private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
+  private readonly destroy$ = new Subject<void>();
 
   protected readonly emailErrors = EMAIL_VALIDATION_MESSAGES;
   protected readonly passwordErrors = PASSWORD_VALIDATION_MESSAGES;
@@ -52,8 +59,22 @@ export class RegisterForm {
 
   protected onSubmit(): void {
     if (this.registerForm.valid) {
-      const formValues = this.registerForm.getRawValue() as Record<string, string>;
-      console.log('Данные формы валидны, отправка:', formValues);
+      const { email, password } = this.registerForm.value;
+
+      this.authService
+        .signUp({
+          email: email!,
+          password: password!,
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: () => {
+            this.router.navigate(['/stub-page']);
+          },
+          error: () => {
+            console.log('error');
+          },
+        });
     } else {
       this.registerForm.markAllAsTouched();
     }

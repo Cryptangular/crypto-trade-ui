@@ -1,7 +1,8 @@
-import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { BehaviorSubject, catchError, Observable, tap, throwError } from 'rxjs';
 import { User } from '../models/auth.models';
+import { AuthResponse, SignUpRequest } from '../types/auth.types';
 
 @Injectable({
   providedIn: 'root',
@@ -10,19 +11,40 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:3000/auth';
 
-  private readonly httpOptions = {
-    withCredentials: true,
-  };
+  private readonly _currentUser = signal<User | null>(null);
 
-  register(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/register`, { email, password }, this.httpOptions);
+  readonly currentUser = this._currentUser.asReadonly();
+  readonly isAuthenticated = computed(() => !!this._currentUser());
+
+  private readonly authStateSubject = new BehaviorSubject<boolean>(false);
+  readonly authState$ = this.authStateSubject.asObservable();
+
+  signUp(data: SignUpRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/register`, data, {
+        withCredentials: true,
+      })
+      .pipe(
+        tap(user => {
+          this._currentUser.set(user);
+          this.authStateSubject.next(true);
+          console.log('Account created successfully!');
+        }),
+        catchError(error => this.handleError(error))
+      );
   }
 
-  login(email: string, password: string): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/login`, { email, password }, this.httpOptions);
-  }
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    const errorMessage = 'An unexpected error occurred';
+    /*
+    if (error.error && error.error.message) {
+      errorMessage = error.error.message;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }*/
 
-  getMe(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/me`, this.httpOptions);
+    console.log(errorMessage);
+
+    return throwError(() => error);
   }
 }

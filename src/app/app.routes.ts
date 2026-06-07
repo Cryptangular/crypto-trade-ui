@@ -3,8 +3,12 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'register',
+    redirectTo: 'stub-page',
     pathMatch: 'full',
+  },
+  {
+    path: 'stub-page',
+    loadComponent: () => import('./pages/stub-page/stub-page').then(m => m.StubPage),
   },
   {
     path: 'register',
