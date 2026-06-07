@@ -5,7 +5,13 @@ import { Router } from '@angular/router';
 import { StxInput } from '../../shared/ui/stx-input/stx-input';
 import { StxButton } from '../../shared/ui/stx-button/stx-button';
 import { StxBtnConfig } from '../../shared/ui/stx-button/stx-button.types';
+import { PasswordValidators } from '../validators/password.validators';
 
+import {
+  CONFIRM_PASSWORD_VALIDATION_MESSAGES,
+  EMAIL_VALIDATION_MESSAGES,
+  PASSWORD_VALIDATION_MESSAGES,
+} from '../constants/errors.constants';
 @Component({
   selector: 'stx-register-form',
   imports: [ReactiveFormsModule, StxInput, StxButton],
@@ -18,11 +24,20 @@ export class RegisterForm {
   private http = inject(HttpClient);
   private router = inject(Router);
 
-  protected registerForm: FormGroup = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
-    confirmPassword: ['', [Validators.required]],
-  });
+  protected readonly emailErrors = EMAIL_VALIDATION_MESSAGES;
+  protected readonly passwordErrors = PASSWORD_VALIDATION_MESSAGES;
+  protected readonly confirmPasswordErrors = CONFIRM_PASSWORD_VALIDATION_MESSAGES;
+
+  protected registerForm: FormGroup = this.fb.group(
+    {
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, PasswordValidators.passwordStrength()]],
+      confirmPassword: ['', [Validators.required]],
+    },
+    {
+      validators: [PasswordValidators.passwordsMatch('password', 'confirmPassword')],
+    }
+  );
 
   protected readonly submitBtnConfig = signal<StxBtnConfig>({
     label: 'Sign up',
@@ -35,5 +50,12 @@ export class RegisterForm {
     href: '/login',
   };
 
-  protected onSubmit(): void {}
+  protected onSubmit(): void {
+    if (this.registerForm.valid) {
+      const formValues = this.registerForm.getRawValue() as Record<string, string>;
+      console.log('Данные формы валидны, отправка:', formValues);
+    } else {
+      this.registerForm.markAllAsTouched();
+    }
+  }
 }

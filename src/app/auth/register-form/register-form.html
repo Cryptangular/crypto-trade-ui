@@ -8,7 +8,8 @@
       label="Email"
       name="email"
       placeholder="example@domain.com"
-      type="email" />
+      type="email"
+      [customErrors]="emailErrors" />
 
     <stx-input
       formControlName="password"
@@ -17,7 +18,8 @@
       label="Password"
       name="password"
       placeholder="Password"
-      type="password" />
+      type="password"
+      [customErrors]="passwordErrors" />
 
     <stx-input
       formControlName="confirmPassword"
@@ -26,7 +28,8 @@
       label="Confirm password"
       name="confirmPassword"
       placeholder="Confirm password"
-      type="password" />
+      type="password"
+      [customErrors]="confirmPasswordErrors" />
     <div class="form-actions">
       <stx-button type="submit" [btnConfig]="submitBtnConfig()" [isDisabled]=" registerForm.invalid" />
 
