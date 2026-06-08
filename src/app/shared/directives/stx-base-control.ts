@@ -1,7 +1,10 @@
-import { DestroyRef, Directive, inject, OnInit } from '@angular/core';
-import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { DestroyRef, Directive, inject, input, OnInit } from '@angular/core';
+import { AbstractControl, ControlValueAccessor, FormControl, NgControl, ValidationErrors } from '@angular/forms';
 import { distinctUntilChanged, map } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { ValidationMessages } from '../types/validation';
+import { StxDefaultErrorStateMatcher } from './default-error-state-matcher';
 
 @Directive()
 export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
@@ -13,6 +16,10 @@ export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
   protected onChange: (value: T | null) => void = () => {};
   protected onTouched: () => void = () => {};
 
+  readonly customErrorStateMatcher = input<ErrorStateMatcher>();
+  readonly customErrors = input<ValidationMessages>({});
+  readonly defaultErrorStateMatcher = new StxDefaultErrorStateMatcher();
+
   constructor() {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
@@ -23,47 +30,107 @@ export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
     this.control.valueChanges
       .pipe(
         map(val => this.formatValue(val)),
-        distinctUntilChanged(),
+        distinctUntilChanged((prev, curr) => this.areValuesEqual(prev, curr)),
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(formattedValue => {
-        if (this.control.value !== formattedValue) {
+        if (!this.areValuesEqual(this.control.value, formattedValue)) {
           this.control.setValue(formattedValue, { emitEvent: false });
         }
         this.onChange(formattedValue);
       });
 
-    if (this.ngControl?.control) {
-      const parentControl = this.ngControl.control;
+    const parentControl = this.ngControl?.control;
+    if (!parentControl) return;
 
-      this.control.setValidators(parentControl.validator);
-      this.control.setAsyncValidators(parentControl.asyncValidator);
-      this.control.updateValueAndValidity({ emitEvent: false });
+    const originalSetValidators = parentControl.setValidators.bind(parentControl);
+    parentControl.setValidators = (validators): void => {
+      originalSetValidators(validators);
+      this.syncValidators(parentControl);
+    };
 
-      const originalMarkAsTouched = parentControl.markAsTouched.bind(parentControl);
-      parentControl.markAsTouched = (opts?: { onlySelf?: boolean }): void => {
-        originalMarkAsTouched(opts);
-        this.control.markAsTouched({ emitEvent: false });
-      };
+    const originalSetAsyncValidators = parentControl.setAsyncValidators.bind(parentControl);
+    parentControl.setAsyncValidators = (validators): void => {
+      originalSetAsyncValidators(validators);
+      this.syncValidators(parentControl);
+    };
 
-      const originalMarkAsUntouched = parentControl.markAsUntouched.bind(parentControl);
-      parentControl.markAsUntouched = (opts?: { onlySelf?: boolean }): void => {
-        originalMarkAsUntouched(opts);
-        this.control.markAsUntouched({ emitEvent: false });
-      };
-      parentControl.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
-        if (this.control.errors !== parentControl.errors) {
-          this.control.setErrors(parentControl.errors);
-        }
+    this.syncValidators(parentControl);
+    this.syncStateFromParent(parentControl);
 
-        if (parentControl.untouched && this.control.touched) {
-          this.control.markAsUntouched({ emitEvent: false });
-        }
-        if (parentControl.pristine && this.control.dirty) {
-          this.control.markAsPristine({ emitEvent: false });
-        }
-      });
+    parentControl.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.syncStateFromParent(parentControl);
+    });
+  }
+
+  protected markAsTouched(): void {
+    this.onTouched();
+
+    if (!this.control.touched) {
+      this.control.markAsTouched({ onlySelf: true, emitEvent: false });
     }
+  }
+
+  protected syncValidators(parentControl: AbstractControl): void {
+    this.control.setValidators(parentControl.validator);
+    this.control.setAsyncValidators(parentControl.asyncValidator);
+    this.control.updateValueAndValidity({ onlySelf: true, emitEvent: false });
+  }
+
+  protected syncStateFromParent(parentControl: AbstractControl): void {
+    this.syncErrors(parentControl.errors);
+    this.syncTouched(parentControl.touched);
+    this.syncDirty(parentControl.dirty);
+    this.syncDisabled(parentControl.disabled);
+  }
+
+  protected syncErrors(errors: ValidationErrors | null): void {
+    if (!this.shallowEqualErrors(this.control.errors, errors)) {
+      this.control.setErrors(errors, { emitEvent: false });
+    }
+  }
+
+  protected syncTouched(isTouched: boolean): void {
+    const options = { onlySelf: true, emitEvent: false };
+    if (isTouched) {
+      this.control.markAsTouched(options);
+    } else {
+      this.control.markAsUntouched(options);
+    }
+  }
+
+  protected syncDirty(isDirty: boolean): void {
+    const options = { onlySelf: true, emitEvent: false };
+    if (isDirty) {
+      this.control.markAsDirty(options);
+    } else {
+      this.control.markAsPristine(options);
+    }
+  }
+
+  protected syncDisabled(isDisabled: boolean): void {
+    const options = { emitEvent: false };
+    if (isDisabled) {
+      this.control.disable(options);
+    } else {
+      this.control.enable(options);
+    }
+  }
+
+  protected shallowEqualErrors(currentErrors: ValidationErrors | null, parentErrors: ValidationErrors | null): boolean {
+    if (currentErrors === parentErrors) return true;
+    if (!currentErrors || !parentErrors) return false;
+
+    const currentKeys = Object.keys(currentErrors);
+    const parentKeys = Object.keys(parentErrors);
+
+    if (currentKeys.length !== parentKeys.length) return false;
+
+    return currentKeys.every(key => currentErrors[key] === parentErrors[key]);
+  }
+
+  protected areValuesEqual(previous: T | null, current: T | null): boolean {
+    return previous === current;
   }
 
   protected formatValue(value: T | null): T | null {
@@ -72,11 +139,9 @@ export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
 
   writeValue(value: T | null): void {
     const formattedValue = this.formatValue(value);
-
-    if (this.control.value === formattedValue) return;
+    if (this.areValuesEqual(this.control.value, formattedValue)) return;
 
     this.control.setValue(formattedValue, { emitEvent: false });
-    this.control.updateValueAndValidity({ emitEvent: false });
   }
 
   registerOnChange(fn: (value: T | null) => void): void {
@@ -88,10 +153,6 @@ export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.control.disable({ emitEvent: false });
-    } else {
-      this.control.enable({ emitEvent: false });
-    }
+    this.syncDisabled(isDisabled);
   }
 }

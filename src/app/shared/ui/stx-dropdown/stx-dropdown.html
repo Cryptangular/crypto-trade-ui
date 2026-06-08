@@ -1,21 +1,23 @@
-<mat-form-field class="stx-input" [appearance]="appearance()">
-  @if (label()) {
+<mat-form-field [appearance]="appearance()">
+  @if(label()) {
   <mat-label>{{ label() }}</mat-label>
   }
-
-  <input
-    matInput
+  <mat-select
+    [attr.name]="name()"
+    [compareWith]="compareWith()"
     [errorStateMatcher]="customErrorStateMatcher() || defaultErrorStateMatcher"
     [formControl]="control"
     [id]="id()"
-    [name]="name()"
+    [multiple]="multiple()"
     [placeholder]="placeholder()"
-    [type]="type()"
-    (blur)="markAsTouched()" />
-
+    (blur)="markAsTouched()">
+    @for(option of options(); track option.value){
+    <mat-option [disabled]="option.disabled" [value]="option.value">{{option.viewValue}}</mat-option>
+    }
+  </mat-select>
   @if (icon()) {
   <mat-icon aria-hidden="false" matSuffix [fontIcon]="icon()" />
-  } @if (control.errors) {
+  } @if(control.errors) {
   <mat-error>{{ control.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
   }
 </mat-form-field>
