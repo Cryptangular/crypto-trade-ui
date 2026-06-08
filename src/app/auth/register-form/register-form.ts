@@ -14,7 +14,7 @@ import {
 import { ToastService } from '../../../core/services/toast/toast-service';
 import { AuthService } from '../services/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
+import { catchError, EMPTY, finalize } from 'rxjs';
 
 @Component({
   selector: 'stx-register-form',
@@ -87,29 +87,33 @@ export class RegisterForm {
         password: password!,
       })
       .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.isLoading.set(false))
+        finalize(() => this.isLoading.set(false)),
+        catchError((err: Error) => {
+          this.onSubmitError(err);
+          return EMPTY;
+        })
       )
       .subscribe({
         next: () => {
           this.router.navigate(['/markets-page']);
         },
-        error: (err: Error) => {
-          this.toastService.danger('error occurred', err.message);
-
-          this.registerForm.patchValue({ password: '', confirmPassword: '' });
-
-          const passwordCtrl = this.registerForm.get('password');
-          const confirmCtrl = this.registerForm.get('confirmPassword');
-
-          passwordCtrl?.setErrors(null);
-          confirmCtrl?.setErrors(null);
-
-          passwordCtrl?.markAsUntouched();
-          confirmCtrl?.markAsUntouched();
-
-          this.registerForm.updateValueAndValidity();
-        },
       });
+  }
+
+  private onSubmitError(err: Error): void {
+    this.toastService.danger('error occurred', err.message);
+
+    this.registerForm.patchValue({ password: '', confirmPassword: '' });
+
+    const passwordCtrl = this.registerForm.get('password');
+    const confirmCtrl = this.registerForm.get('confirmPassword');
+
+    passwordCtrl?.setErrors(null);
+    confirmCtrl?.setErrors(null);
+
+    passwordCtrl?.markAsUntouched();
+    confirmCtrl?.markAsUntouched();
+
+    this.registerForm.updateValueAndValidity();
   }
 }
