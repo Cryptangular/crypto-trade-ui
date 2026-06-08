@@ -14,6 +14,7 @@ import {
 import { ToastService } from '../../../core/services/toast/toast-service';
 import { AuthService } from '../services/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'stx-register-form',
@@ -28,6 +29,7 @@ export class RegisterForm {
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly isLoading = signal(false);
 
   protected readonly emailErrors = EMAIL_VALIDATION_MESSAGES;
   protected readonly passwordErrors = PASSWORD_VALIDATION_MESSAGES;
@@ -68,10 +70,14 @@ export class RegisterForm {
   }
 
   protected onSubmit(): void {
+    if (this.isLoading()) return;
+
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;
     }
+
+    this.isLoading.set(true);
 
     const { email, password } = this.registerForm.value;
 
@@ -80,7 +86,10 @@ export class RegisterForm {
         email: email!,
         password: password!,
       })
-      .pipe(takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false))
+      )
       .subscribe({
         next: () => {
           this.router.navigate(['/markets-page']);
