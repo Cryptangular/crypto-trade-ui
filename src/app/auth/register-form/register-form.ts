@@ -33,16 +33,7 @@ export class RegisterForm {
   protected readonly passwordErrors = PASSWORD_VALIDATION_MESSAGES;
   protected readonly confirmPasswordErrors = CONFIRM_PASSWORD_VALIDATION_MESSAGES;
 
-  protected registerForm: FormGroup = this.fb.group(
-    {
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, PasswordValidators.passwordStrength()]],
-      confirmPassword: ['', [Validators.required]],
-    },
-    {
-      validators: [PasswordValidators.passwordsMatch('password', 'confirmPassword')],
-    }
-  );
+  protected registerForm!: FormGroup;
 
   protected readonly submitBtnConfig = signal<StxBtnConfig>({
     label: 'Sign up',
@@ -55,29 +46,61 @@ export class RegisterForm {
     href: '/login',
   };
 
-  protected onSubmit(): void {
-    if (this.registerForm.valid) {
-      const { email, password } = this.registerForm.value;
+  constructor() {
+    this.initForm();
+  }
 
-      this.authService
-        .signUp({
-          email: email!,
-          password: password!,
-        })
-        .pipe(takeUntilDestroyed(this.destroyRef))
-        .subscribe({
-          next: () => {
-            this.router.navigate(['/stub-page']);
-          },
-          error: (err: Error) => {
-            this.toastService.danger('error occurred', err.message);
-            this.registerForm.patchValue({ password: '', confirmPassword: '' });
-            this.registerForm.get('password')?.markAsUntouched();
-            this.registerForm.get('confirmPassword')?.markAsUntouched();
-          },
-        });
-    } else {
+  private initForm(): void {
+    const passwordControl = this.fb.control('', [Validators.required, PasswordValidators.passwordStrength()]);
+
+    this.registerForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: passwordControl,
+      confirmPassword: ['', [Validators.required, PasswordValidators.passwordsMatch(passwordControl)]],
+    });
+
+    passwordControl.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      const confirmControl = this.registerForm.get('confirmPassword');
+      if (confirmControl?.value) {
+        confirmControl.updateValueAndValidity({ emitEvent: true });
+      }
+    });
+  }
+
+  protected onSubmit(): void {
+    if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
+      return;
     }
+
+    const { email, password } = this.registerForm.value;
+
+    this.authService
+      .signUp({
+        email: email!,
+        password: password!,
+      })
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/stub-page']);
+        },
+        error: (err: Error) => {
+          this.toastService.danger('error occurred', err.message);
+
+          this.registerForm.patchValue({ password: '', confirmPassword: '' });
+
+          const passwordCtrl = this.registerForm.get('password');
+          const confirmCtrl = this.registerForm.get('confirmPassword');
+
+          passwordCtrl?.setErrors(null);
+          confirmCtrl?.setErrors(null);
+
+          passwordCtrl?.markAsUntouched();
+          confirmCtrl?.markAsUntouched();
+
+          this.registerForm.updateValueAndValidity();
+        },
+      });
   }
 }

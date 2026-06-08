@@ -1,15 +1,17 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
-import { AuthResponse, SignUpRequest, User } from '../types/auth.types';
+import { AuthRequest, AuthResponse, User } from '../types/auth.types';
 import { environment } from '../../../environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly _currentUser = signal<User | null>(null);
@@ -20,7 +22,7 @@ export class AuthService {
 
   readonly isAuthenticated$ = toObservable(this.isAuthenticated);
 
-  signUp(data: SignUpRequest): Observable<AuthResponse> {
+  signUp(data: AuthRequest): Observable<AuthResponse> {
     return this.http
       .post<AuthResponse>(`${this.apiUrl}/register`, data, {
         withCredentials: true,
@@ -33,25 +35,25 @@ export class AuthService {
       );
   }
 
+  signOut(): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.apiUrl}/signout`, {}, { withCredentials: true }).pipe(
+      tap(() => this._currentUser.set(null)),
+      catchError(error => this.handleError(error))
+    );
+  }
+
   private handleError(error: HttpErrorResponse): Observable<never> {
     let errorMessage = 'An unexpected error occurred';
 
     if (error.status === 0) {
       errorMessage = 'Network error: Please check your internet connection.';
     } else {
-      switch (error.status) {
-        case 429:
-          errorMessage = 'Too many requests. Please try again later.';
-          break;
-        case 500:
-          errorMessage = 'Internal server error. Something went wrong on our end.';
-          break;
-        case 409:
-          errorMessage = 'An account with this email address already exists.';
-          break;
-        default:
-          errorMessage = error.error?.message || error.message || errorMessage;
-      }
+      const errorMap: Record<number, string> = {
+        409: 'An account with this email address already exists.',
+        429: 'Too many requests. Please try again later.',
+        500: 'Internal server error. Something went wrong on our end.',
+      };
+      errorMessage = errorMap[error.status] || error.error?.message || error.message || errorMessage;
     }
     return throwError(() => new Error(errorMessage));
   }

@@ -30,9 +30,9 @@
       placeholder="Confirm password"
       type="password"
       [customErrors]="confirmPasswordErrors" />
-    <div class="form-actions">
-      <stx-button type="submit" [btnConfig]="submitBtnConfig()" [isDisabled]=" registerForm.invalid" />
 
+    <div class="form-actions">
+      <stx-button type="submit" [btnConfig]="submitBtnConfig()" [isDisabled]="registerForm.invalid" />
       <stx-button [btnConfig]="loginLinkConfig" />
     </div>
   </form>

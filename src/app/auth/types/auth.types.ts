@@ -5,12 +5,7 @@ export type User = {
   updatedAt: string;
 };
 
-export type SignUpRequest = {
-  email: string;
-  password: string;
-};
-
-export type SignInRequest = {
+export type AuthRequest = {
   email: string;
   password: string;
 };
