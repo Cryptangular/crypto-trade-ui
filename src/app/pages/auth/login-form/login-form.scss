@@ -1,0 +1,9 @@
+@use '../auth-shared' as *;
+
+:host {
+  @include auth-page-layout;
+}
+
+.login-container {
+  @include auth-card-structure;
+}
