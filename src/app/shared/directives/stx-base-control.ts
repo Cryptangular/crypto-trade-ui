@@ -43,6 +43,18 @@ export class StxBaseControl<T> implements ControlValueAccessor, OnInit {
     const parentControl = this.ngControl?.control;
     if (!parentControl) return;
 
+    const originalSetValidators = parentControl.setValidators.bind(parentControl);
+    parentControl.setValidators = (validators): void => {
+      originalSetValidators(validators);
+      this.syncValidators(parentControl);
+    };
+
+    const originalSetAsyncValidators = parentControl.setAsyncValidators.bind(parentControl);
+    parentControl.setAsyncValidators = (validators): void => {
+      originalSetAsyncValidators(validators);
+      this.syncValidators(parentControl);
+    };
+
     this.syncValidators(parentControl);
     this.syncStateFromParent(parentControl);
 
