@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { StxToaster } from './shared/ui/stx-toaster/stx-toaster';
+import { StxHeader } from './shared/components/stx-header/stx-header';
+import { StxFooter } from './shared/components/stx-footer/stx-footer';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-root',
-  imports: [RouterOutlet, StxToaster],
+  imports: [RouterOutlet, StxToaster, StxHeader, StxFooter],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
