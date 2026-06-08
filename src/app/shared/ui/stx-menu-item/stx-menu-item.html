@@ -1,0 +1,18 @@
+@let it = item(); @if (isParent(it)) {
+<button mat-menu-item type="button" [disabled]="it.disabled" [matMenuTriggerFor]="submenu">
+  @if (it.icon) {
+  <mat-icon [fontIcon]="it.icon" />
+  } <span>{{ it.label }}</span>
+</button>
+<mat-menu #submenu="matMenu">
+  @for (child of it.children; track child.id) {
+  <stx-menu-item [item]="child" />
+  }
+</mat-menu>
+} @else {
+<button mat-menu-item type="button" [disabled]="it.disabled" (click)="it.click()">
+  @if (it.icon) {
+  <mat-icon [fontIcon]="it.icon" />
+  } <span>{{ it.label }}</span>
+</button>
+}
