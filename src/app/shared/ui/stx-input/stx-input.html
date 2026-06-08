@@ -1,5 +1,5 @@
 <mat-form-field class="stx-input" [appearance]="appearance()">
-  @if(label()) {
+  @if (label()) {
   <mat-label>{{ label() }}</mat-label>
   }
 
@@ -11,10 +11,11 @@
     [name]="name()"
     [placeholder]="placeholder()"
     [type]="type()"
-    (blur)="onTouched()" />
+    (blur)="markAsTouched()" />
 
   @if (icon()) {
   <mat-icon aria-hidden="false" matSuffix [fontIcon]="icon()" />
+  } @if (control.errors) {
+  <mat-error>{{ control.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
   }
-  <mat-error>{{ ngControl?.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
 </mat-form-field>
