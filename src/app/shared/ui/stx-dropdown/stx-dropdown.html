@@ -17,6 +17,7 @@
   </mat-select>
   @if (icon()) {
   <mat-icon aria-hidden="false" matSuffix [fontIcon]="icon()" />
-  }
+  } @if(control.errors) {
   <mat-error>{{ control.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
+  }
 </mat-form-field>
