@@ -4,14 +4,12 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthRequest, AuthResponse, User } from '../types/auth.types';
 import { environment } from '../../../environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly router = inject(Router);
   private readonly apiUrl = `${environment.apiUrl}/auth`;
 
   private readonly _currentUser = signal<User | null>(null);

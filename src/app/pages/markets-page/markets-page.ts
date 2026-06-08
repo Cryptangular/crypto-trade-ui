@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-  selector: 'stx-stub-page',
+  selector: 'stx-markets-page',
   imports: [],
-  templateUrl: './stub-page.html',
-  styleUrl: './stub-page.scss',
+  templateUrl: './markets-page.html',
+  styleUrl: './markets-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StubPage {}
+export class MarketsPage {}

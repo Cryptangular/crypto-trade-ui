@@ -83,7 +83,7 @@ export class RegisterForm {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.router.navigate(['/stub-page']);
+          this.router.navigate(['/markets-page']);
         },
         error: (err: Error) => {
           this.toastService.danger('error occurred', err.message);
