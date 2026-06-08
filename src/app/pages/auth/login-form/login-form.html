@@ -4,7 +4,7 @@
     <stx-input
       formControlName="email"
       icon="mail"
-      id="reg-email"
+      id="login-email"
       label="Email"
       name="email"
       placeholder="example@domain.com"
@@ -14,7 +14,7 @@
     <stx-input
       formControlName="password"
       icon="lock"
-      id="reg-password"
+      id="login-password"
       label="Password"
       name="password"
       placeholder="Password"
@@ -23,6 +23,7 @@
 
     <div class="form-actions">
       <stx-button type="submit" [btnConfig]="submitBtnConfig()" [isDisabled]="loginForm.invalid || isLoading()" />
+
       <stx-button [btnConfig]="registerLinkConfig" />
     </div>
   </form>

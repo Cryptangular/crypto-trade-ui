@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, Observable, of, tap, throwError } from 'rxjs';
 import { AuthRequest, AuthResponse, User } from '../types/auth.types';
 import { environment } from '../../../../environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -38,6 +38,10 @@ export class AuthService {
       tap(() => this._currentUser.set(null)),
       catchError(error => this.handleError(error))
     );
+  }
+
+  login(_data: AuthRequest): Observable<{ message: string }> {
+    return of({ message: 'Login successful' });
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
