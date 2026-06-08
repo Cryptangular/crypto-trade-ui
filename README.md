@@ -90,3 +90,7 @@ Recommended local check before pushing changes:
 ```bash
 npm run lint && npm run format:check && npm test
 ```
+
+## Deploy
+
+[Deploy link](https://stonks.com.ru/)
