@@ -6,7 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { RegisterForm } from './register-form';
 import { AuthService } from '../services/auth-service';
-import { ToastService } from '../../../core/services/toast/toast-service';
+import { ToastService } from '../../../../core/services/toast/toast-service';
 
 describe('RegisterForm', () => {
   let component: RegisterForm;

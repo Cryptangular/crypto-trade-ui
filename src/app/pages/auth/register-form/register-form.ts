@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { StxInput } from '../../shared/ui/stx-input/stx-input';
-import { StxButton } from '../../shared/ui/stx-button/stx-button';
-import { StxBtnConfig } from '../../shared/ui/stx-button/stx-button.types';
+import { StxInput } from '../../../shared/ui/stx-input/stx-input';
+import { StxButton } from '../../../shared/ui/stx-button/stx-button';
+import { StxBtnConfig } from '../../../shared/ui/stx-button/stx-button.types';
 import { PasswordValidators } from '../validators/password.validators';
 
 import {
@@ -11,7 +11,7 @@ import {
   EMAIL_VALIDATION_MESSAGES,
   PASSWORD_VALIDATION_MESSAGES,
 } from '../constants/errors.constants';
-import { ToastService } from '../../../core/services/toast/toast-service';
+import { ToastService } from '../../../../core/services/toast/toast-service';
 import { AuthService } from '../services/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize } from 'rxjs';

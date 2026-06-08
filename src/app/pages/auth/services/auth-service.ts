@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthRequest, AuthResponse, User } from '../types/auth.types';
-import { environment } from '../../../environments/environment';
+import { environment } from '../../../../environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
 
 @Injectable({

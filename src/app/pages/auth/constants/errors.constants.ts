@@ -1,4 +1,4 @@
-import { ValidationMessages } from '../../shared/types/validation';
+import { ValidationMessages } from '../../../shared/types/validation';
 
 export const EMAIL_VALIDATION_MESSAGES: ValidationMessages = {
   required: 'Email is required',
