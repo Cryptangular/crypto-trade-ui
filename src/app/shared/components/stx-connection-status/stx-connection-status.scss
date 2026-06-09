@@ -1,0 +1,16 @@
+.stx-status-icon {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  cursor: help;
+  background-color: #95a5a6;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+
+  &--connected {
+    background-color: #2ecc71;
+    box-shadow: 0 0 6px 1px rgba(46, 204, 113, 0.5);
+  }
+}
