@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 import { AuthRequest, AuthResponse, User } from '../types/auth.types';
 import { environment } from '../../../../environments/environment';
 import { toObservable } from '@angular/core/rxjs-interop';
@@ -40,23 +40,21 @@ export class AuthService {
     );
   }
 
-  login(_data: AuthRequest): Observable<{ message: string }> {
-    return of({ message: 'Login successful' });
+  login(data: AuthRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/login`, data, {
+        withCredentials: true,
+      })
+      .pipe(
+        tap(user => {
+          this._currentUser.set(user);
+        }),
+        catchError(error => this.handleError(error))
+      );
   }
 
   private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'An unexpected error occurred';
-
-    if (error.status === 0) {
-      errorMessage = 'Network error: Please check your internet connection.';
-    } else {
-      const errorMap: Record<number, string> = {
-        409: 'An account with this email address already exists.',
-        429: 'Too many requests. Please try again later.',
-        500: 'Internal server error. Something went wrong on our end.',
-      };
-      errorMessage = errorMap[error.status] || error.error?.message || error.message || errorMessage;
-    }
-    return throwError(() => new Error(errorMessage));
+    const errorMessage = 'An unexpected error occurred';
+    return throwError(() => new Error(error.error?.message || error.message || errorMessage));
   }
 }

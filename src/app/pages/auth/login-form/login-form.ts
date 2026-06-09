@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, EMPTY, finalize } from 'rxjs';
@@ -6,7 +6,6 @@ import { catchError, EMPTY, finalize } from 'rxjs';
 import { StxInput } from '../../../shared/ui/stx-input/stx-input';
 import { StxButton } from '../../../shared/ui/stx-button/stx-button';
 import { StxBtnConfig } from '../../../shared/ui/stx-button/stx-button.types';
-import { PasswordValidators } from '../validators/password.validators';
 import { EMAIL_VALIDATION_MESSAGES, PASSWORD_VALIDATION_MESSAGES } from '../constants/errors.constants';
 import { ToastService } from '../../../../core/services/toast/toast-service';
 import { AuthService } from '../services/auth-service';
@@ -24,6 +23,7 @@ export class LoginForm {
   private readonly toastService = inject(ToastService);
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly isLoading = signal(false);
   protected readonly emailErrors = EMAIL_VALIDATION_MESSAGES;
@@ -31,7 +31,7 @@ export class LoginForm {
 
   protected readonly loginForm = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, PasswordValidators.passwordStrength()]],
+    password: ['', [Validators.required]],
   });
 
   protected readonly submitBtnConfig = signal<StxBtnConfig>({
@@ -73,7 +73,6 @@ export class LoginForm {
 
   private onSubmitError(err: Error): void {
     this.toastService.danger('error occurred', err.message);
-
-    this.loginForm.get('password')?.reset();
+    this.loginForm.controls.password.reset();
   }
 }
