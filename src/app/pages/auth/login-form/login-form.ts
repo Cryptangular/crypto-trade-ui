@@ -10,10 +10,11 @@ import { PasswordValidators } from '../validators/password.validators';
 import { EMAIL_VALIDATION_MESSAGES, PASSWORD_VALIDATION_MESSAGES } from '../constants/errors.constants';
 import { ToastService } from '../../../../core/services/toast/toast-service';
 import { AuthService } from '../services/auth-service';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'stx-login-form',
-  imports: [ReactiveFormsModule, StxInput, StxButton],
+  imports: [ReactiveFormsModule, StxInput, StxButton, MatCardModule],
   templateUrl: './login-form.html',
   styleUrl: './login-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

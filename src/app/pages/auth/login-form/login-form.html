@@ -1,30 +1,37 @@
-<div class="login-container">
-  <h2>Log in</h2>
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <stx-input
-      formControlName="email"
-      icon="mail"
-      id="login-email"
-      label="Email"
-      name="email"
-      placeholder="example@domain.com"
-      type="email"
-      [customErrors]="emailErrors" />
+<mat-card class="login-card">
+  <mat-card-header>
+    <mat-card-title>Log in</mat-card-title>
+  </mat-card-header>
 
-    <stx-input
-      formControlName="password"
-      icon="lock"
-      id="login-password"
-      label="Password"
-      name="password"
-      placeholder="Password"
-      type="password"
-      [customErrors]="passwordErrors" />
+  <mat-card-content>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <stx-input
+        appearance="fill"
+        formControlName="email"
+        icon="mail"
+        id="login-email"
+        label="Email"
+        name="email"
+        placeholder="example@domain.com"
+        type="email"
+        [customErrors]="emailErrors" />
 
-    <div class="form-actions">
-      <stx-button type="submit" [btnConfig]="submitBtnConfig()" [isDisabled]="loginForm.invalid || isLoading()" />
+      <stx-input
+        appearance="fill"
+        formControlName="password"
+        icon="lock"
+        id="login-password"
+        label="Password"
+        name="password"
+        placeholder="Password"
+        type="password"
+        [customErrors]="passwordErrors" />
 
-      <stx-button [btnConfig]="registerLinkConfig" />
-    </div>
-  </form>
-</div>
+      <div class="form-actions">
+        <stx-button type="submit" [btnConfig]="submitBtnConfig()" [isDisabled]="loginForm.invalid || isLoading()" />
+
+        <stx-button [btnConfig]="registerLinkConfig" />
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
