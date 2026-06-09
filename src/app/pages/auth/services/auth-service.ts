@@ -40,19 +40,21 @@ export class AuthService {
     );
   }
 
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    let errorMessage = 'An unexpected error occurred';
+  login(data: AuthRequest): Observable<AuthResponse> {
+    return this.http
+      .post<AuthResponse>(`${this.apiUrl}/login`, data, {
+        withCredentials: true,
+      })
+      .pipe(
+        tap(user => {
+          this._currentUser.set(user);
+        }),
+        catchError(error => this.handleError(error))
+      );
+  }
 
-    if (error.status === 0) {
-      errorMessage = 'Network error: Please check your internet connection.';
-    } else {
-      const errorMap: Record<number, string> = {
-        409: 'An account with this email address already exists.',
-        429: 'Too many requests. Please try again later.',
-        500: 'Internal server error. Something went wrong on our end.',
-      };
-      errorMessage = errorMap[error.status] || error.error?.message || error.message || errorMessage;
-    }
-    return throwError(() => new Error(errorMessage));
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    const errorMessage = 'An unexpected error occurred';
+    return throwError(() => new Error(error.error?.message || error.message || errorMessage));
   }
 }

@@ -15,10 +15,11 @@ import { ToastService } from '../../../../core/services/toast/toast-service';
 import { AuthService } from '../services/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize } from 'rxjs';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'stx-register-form',
-  imports: [ReactiveFormsModule, StxInput, StxButton],
+  imports: [ReactiveFormsModule, StxInput, StxButton, MatCardModule],
   templateUrl: './register-form.html',
   styleUrl: './register-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

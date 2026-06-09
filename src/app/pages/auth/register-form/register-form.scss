@@ -1,54 +1,9 @@
-$color-bg-page: #181a20;
-$color-bg-card: #1e2329;
-$color-border-input: #474d57;
-$color-text-main: #eaecef;
-
-$card-max-width: 460px;
-$card-padding: 40px;
-$radius-card: 16px;
-$spacing-form-gap: 20px;
-$font-main: 'SairaSemiCondensed', sans-serif;
+@use '../auth-shared' as *;
 
 :host {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100%;
-  background-color: $color-bg-page;
-  font-family: $font-main;
-  box-sizing: border-box;
+  @include auth-page-layout;
 }
 
-.registration-container {
-  background-color: $color-bg-card;
-  border: 1px solid rgba($color-border-input, 0.3);
-  border-radius: $radius-card;
-  padding: $card-padding;
-  width: 100%;
-  max-width: $card-max-width;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
-  box-sizing: border-box;
-
-  h2 {
-    color: $color-text-main;
-    font-size: 32px;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 32px;
-    text-align: center;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: $spacing-form-gap;
-
-    .form-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      margin-top: 12px;
-      align-items: center;
-    }
-  }
+.register-card {
+  @include auth-card-structure;
 }
