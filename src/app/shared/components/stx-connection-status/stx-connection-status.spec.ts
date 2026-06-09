@@ -13,7 +13,7 @@ describe('StxConnectionStatus', () => {
 
     fixture = TestBed.createComponent(StxConnectionStatus);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {

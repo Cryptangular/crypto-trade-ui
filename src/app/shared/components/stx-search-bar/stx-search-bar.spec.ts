@@ -13,7 +13,7 @@ describe('StxSearchBar', () => {
 
     fixture = TestBed.createComponent(StxSearchBar);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
