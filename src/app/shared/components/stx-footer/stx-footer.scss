@@ -1,0 +1,67 @@
+@use 'variables' as var;
+
+$brand-yellow: #fcd535;
+$border-color: #484e57;
+
+:host {
+  display: block;
+  font-family: sans-serif;
+  font-size: clamp(14px, 1.1vw, 16px);
+  color: $brand-yellow;
+  border-top: 2px solid $border-color;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: var.$stx-space-lg var.$stx-space-xl;
+}
+
+.rss-logo-link {
+  display: flex;
+  align-items: center;
+  gap: var.$stx-space-md;
+  color: #ffffff;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    transform 0.2s ease-in-out,
+    color 0.2s ease-in-out;
+
+  &:hover,
+  &:focus-visible {
+    color: $brand-yellow;
+    transform: scale(1.02);
+    outline: none;
+  }
+}
+
+.rss-logo-img {
+  padding: 2px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+}
+
+.copyright {
+  font-weight: 600;
+  color: #8b949e;
+}
+
+.copy-symbol {
+  margin-right: var.$stx-space-xs;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .content-wrapper {
+    flex-direction: column;
+    gap: var.$stx-space-md;
+    padding: var.$stx-space-md var.$stx-space-lg;
+    text-align: center;
+  }
+}
