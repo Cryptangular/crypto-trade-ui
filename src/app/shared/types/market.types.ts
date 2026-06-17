@@ -1,4 +1,4 @@
-export type TokenMarketData = {
+export type MarketToken = {
   symbol: string;
   baseAsset: string;
   quoteAsset: string;
@@ -8,6 +8,6 @@ export type TokenMarketData = {
   marketCap: number;
 };
 
-export type TokensResponse = {
-  data: TokenMarketData[];
+export type MarketResponse = {
+  data: MarketToken[];
 };

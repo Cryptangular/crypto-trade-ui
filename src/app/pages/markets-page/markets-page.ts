@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { CryptoMarketService } from './crypto-market.service';
+import { CryptoMarketService } from './services/crypto-market.service';
 import { MatTableModule } from '@angular/material/table';
 
 @Component({
