@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CryptoMarketService } from './crypto-market.service';
 
 @Component({
@@ -8,16 +8,12 @@ import { CryptoMarketService } from './crypto-market.service';
   styleUrl: './markets-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MarketsPage implements OnInit {
+export class MarketsPage {
   private readonly marketService = inject(CryptoMarketService);
 
-  readonly filteredTokens = computed(() => {
-    const tokens = this.marketService.allTokens();
-    console.log(tokens);
-    return tokens;
-  });
+  readonly tokens = this.marketService.allTokens;
 
-  ngOnInit(): void {
+  constructor() {
     this.marketService.loadInitialMarketData();
   }
 }
