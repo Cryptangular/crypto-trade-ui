@@ -1,1 +1,28 @@
-<p>markets-page works!</p>
+<div class="markets-container">
+  <h2>Crypto Markets</h2>
+
+  <table class="crypto-table">
+    <thead>
+      <tr>
+        <th>Coin</th>
+        <th>Price</th>
+        <th>24h Change</th>
+        <th>Volume</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (token of filteredTokens(); track token.symbol) {
+      <tr>
+        <td class="bold">{{ token.baseAsset }} <span class="text-muted">/ {{ token.quoteAsset }}</span></td>
+        <td>{{ token.price }}</td>
+        <td>{{ token.change24h }}%</td>
+        <td>{{ token.volume24h }}</td>
+      </tr>
+      } @empty {
+      <tr>
+        <td class="loading" colspan="4">Loading market data...</td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
