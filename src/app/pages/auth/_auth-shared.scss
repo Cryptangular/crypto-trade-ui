@@ -15,7 +15,7 @@ $font-main: 'PingFang SC', 'Inter', sans-serif;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 100%;
   background-color: $color-bg-page;
   font-family: $font-main;
 }
