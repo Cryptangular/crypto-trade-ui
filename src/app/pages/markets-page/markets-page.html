@@ -1,28 +1,36 @@
 <div class="markets-container">
   <h2>Crypto Markets</h2>
 
-  <table class="crypto-table">
-    <thead>
-      <tr>
-        <th>Coin</th>
-        <th>Price</th>
-        <th>24h Change</th>
-        <th>Volume</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (token of tokens(); track token.symbol) {
-      <tr>
-        <td class="bold">{{ token.baseAsset }} <span class="text-muted">/ {{ token.quoteAsset }}</span></td>
-        <td>{{ token.price }}</td>
-        <td>{{ token.change24h }}%</td>
-        <td>{{ token.volume24h }}</td>
-      </tr>
-      } @empty {
-      <tr>
-        <td class="loading" colspan="4">Loading market data...</td>
-      </tr>
-      }
-    </tbody>
+  <table class="mat-elevation-z1 crypto-table" mat-table [dataSource]="tokens()">
+    <ng-container matColumnDef="coin">
+      <th *matHeaderCellDef mat-header-cell>Coin</th>
+      <td *matCellDef="let token" class="bold" mat-cell>
+        {{ token.baseAsset }} <span class="text-muted">/ {{ token.quoteAsset }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th *matHeaderCellDef mat-header-cell>Price</th>
+      <td *matCellDef="let token" mat-cell>{{ token.price }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="change24h">
+      <th *matHeaderCellDef mat-header-cell>24h Change</th>
+      <td *matCellDef="let token" mat-cell [class.negative]="token.change24h.startsWith('-')">
+        {{ token.change24h }}%
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="volume">
+      <th *matHeaderCellDef mat-header-cell>Volume</th>
+      <td *matCellDef="let token" mat-cell>{{ token.volume24h }}</td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns;" mat-row></tr>
+
+    <tr *matNoDataRow class="mat-row">
+      <td class="mat-cell loading" [attr.colspan]="displayedColumns.length">Loading market data...</td>
+    </tr>
   </table>
 </div>
