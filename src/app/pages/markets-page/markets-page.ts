@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CryptoMarketService } from './services/crypto-market.service';
 import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'stx-markets-page',
@@ -12,6 +13,7 @@ import { MatTableModule } from '@angular/material/table';
 })
 export class MarketsPage {
   private readonly marketService = inject(CryptoMarketService);
+  private readonly router = inject(Router);
 
   readonly tokens = this.marketService.allTokens;
 
@@ -19,5 +21,9 @@ export class MarketsPage {
 
   constructor() {
     this.marketService.loadInitialMarketData();
+  }
+
+  navigateToTrade(symbol: string): void {
+    this.router.navigate(['/trade', symbol]);
   }
 }

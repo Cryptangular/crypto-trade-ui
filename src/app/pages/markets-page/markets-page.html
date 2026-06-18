@@ -34,7 +34,11 @@
     </ng-container>
 
     <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
-    <tr *matRowDef="let row; columns: displayedColumns;" class="crypto-row" mat-row></tr>
+    <tr
+      *matRowDef="let row; columns: displayedColumns;"
+      class="crypto-row"
+      mat-row
+      (click)="navigateToTrade(row.symbol)"></tr>
 
     <tr *matNoDataRow class="mat-row">
       <td class="mat-cell loading" [attr.colspan]="displayedColumns.length">Loading market data...</td>

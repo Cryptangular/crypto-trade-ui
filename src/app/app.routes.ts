@@ -9,8 +9,13 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'markets-page',
+    path: 'markets',
     loadComponent: () => import('./pages/markets-page/markets-page').then(m => m.MarketsPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'trade/:symbol',
+    loadComponent: () => import('./pages/trade-page/trade-page').then(m => m.TradePage),
     canActivate: [authGuard],
   },
   {
