@@ -9,7 +9,7 @@ type StxIconBtnConfig = {
   appearance: 'icon';
   icon: StxIcons;
   label?: never;
-  href?: never;
+  href?: string;
 };
 
 type StxTextBtnConfig = {

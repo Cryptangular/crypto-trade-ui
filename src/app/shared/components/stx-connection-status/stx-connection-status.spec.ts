@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StxFooter } from './stx-footer';
 
-describe('StxFooter', () => {
-  let component: StxFooter;
-  let fixture: ComponentFixture<StxFooter>;
+import { StxConnectionStatus } from './stx-connection-status';
+
+describe('StxConnectionStatus', () => {
+  let component: StxConnectionStatus;
+  let fixture: ComponentFixture<StxConnectionStatus>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StxFooter],
+      imports: [StxConnectionStatus],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StxFooter);
+    fixture = TestBed.createComponent(StxConnectionStatus);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 

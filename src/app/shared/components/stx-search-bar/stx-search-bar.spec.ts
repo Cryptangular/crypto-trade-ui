@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { StxFooter } from './stx-footer';
 
-describe('StxFooter', () => {
-  let component: StxFooter;
-  let fixture: ComponentFixture<StxFooter>;
+import { StxSearchBar } from './stx-search-bar';
+
+describe('StxSearchBar', () => {
+  let component: StxSearchBar;
+  let fixture: ComponentFixture<StxSearchBar>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StxFooter],
+      imports: [StxSearchBar],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(StxFooter);
+    fixture = TestBed.createComponent(StxSearchBar);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
   });
 
