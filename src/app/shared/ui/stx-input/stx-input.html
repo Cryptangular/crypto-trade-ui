@@ -11,8 +11,8 @@
     [name]="name()"
     [placeholder]="placeholder()"
     [type]="typeHandler()"
-    (input)="onInput($event)"
-    (blur)="markAsTouched()" />
+    (blur)="markAsTouched()"
+    (input)="onInput($event)" />
 
   @if (icon() || secret()) {
   <mat-icon aria-hidden="false" matSuffix [fontIcon]="iconHandler()" (click)="onIconClick($event)" />
