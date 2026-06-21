@@ -1,3 +1,19 @@
-<p>stx-header works!</p>
-<p>stx-header works!</p>
-<p>stx-header works!</p>
+<header class="stx-header">
+  <a class="stx-logo" routerLink="/dashboard">
+    <img alt="stonks" class="stx-logo__image" height="25" ngSrc="./assets/images/logo.svg" width="25" />
+    <span class="stx-logo__title">stonks</span>
+  </a>
+  <stx-search-bar (searchChanged)="onChange($event)" />
+  <nav aria-label="main navigation" class="stx-nav">
+    <ul class="stx-nav__list">
+      @for(linkConfig of navButtonConfigs(); track linkConfig.href){
+      <li class="stx-nav__item">
+        <stx-button [btnConfig]="linkConfig" />
+      </li>
+      }
+    </ul>
+  </nav>
+  <!-- TODO: Replace with [status]="isApiConnected()" once backend support for 'hasBinanceKeys' is ready -->
+  <stx-connection-status [status]="isOnline()" />
+  <stx-button [btnConfig]="settingBtnConfig" />
+</header>

@@ -15,7 +15,9 @@ export class StxSearchBar {
   readonly searchChanged = output<string>();
   readonly searchControl = new FormControl('');
 
-  private readonly searchStream = this.searchControl.valueChanges
-    .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
-    .subscribe(query => this.searchChanged.emit(query ?? ''));
+  constructor() {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed())
+      .subscribe(query => this.searchChanged.emit(query ?? ''));
+  }
 }

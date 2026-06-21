@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { StxFooter } from './stx-footer';
 
 describe('StxFooter', () => {
@@ -13,7 +12,8 @@ describe('StxFooter', () => {
 
     fixture = TestBed.createComponent(StxFooter);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+
+    fixture.detectChanges();
   });
 
   it('should create', () => {
