@@ -5,11 +5,8 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { InputAppearance, InputType } from './stx-input.types';
 import { StxBaseControl } from '../../directives/stx-base-control';
 import { StxErrorMessagePipe } from '../../pipes/stx-error-message-pipe';
-import { ValidationMessages } from '../../types/validation';
 import { MatIcon } from '@angular/material/icon';
 import { MaterialIcons } from 'material-design-icons-literal-types';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { StxDefaultErrorStateMatcher } from './default-error-state-matcher';
 
 @Component({
   selector: 'stx-input',
@@ -26,8 +23,6 @@ export class StxInput<T = string> extends StxBaseControl<T> {
   readonly label = input<string>();
   readonly placeholder = input<string>('');
   readonly icon = input<MaterialIcons | ''>('');
-  readonly defaultErrorStateMatcher = new StxDefaultErrorStateMatcher();
-  readonly customErrorStateMatcher = input<ErrorStateMatcher>();
   readonly secret = input<boolean>(false);
   readonly secretVisibility = signal<boolean>(false);
 
@@ -48,14 +43,18 @@ export class StxInput<T = string> extends StxBaseControl<T> {
   });
   readonly iconClick = output<void>();
 
-  readonly customErrors = input<ValidationMessages>({});
-
   readonly appearance = input<InputAppearance>('outline');
   readonly trimmed = input<boolean>(false);
 
   protected override formatValue(v: T | null): T | null {
     const value = this.trimmed() && typeof v === 'string' ? v.trim() : v;
     return value as T | null;
+  }
+
+  onInput(event: Event): void {
+    if (!(event.target instanceof HTMLInputElement)) return;
+    const value = this.formatValue(event.target.value as T);
+    this.onChange(value);
   }
 
   onIconClick(event: MouseEvent): void {

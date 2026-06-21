@@ -10,11 +10,12 @@
     [id]="id()"
     [name]="name()"
     [placeholder]="placeholder()"
-    [type]="type()"
+    [type]="typeHandler()"
+    (input)="onInput($event)"
     (blur)="markAsTouched()" />
 
-  @if (icon()) {
-  <mat-icon aria-hidden="false" matSuffix [fontIcon]="icon()" />
+  @if (icon() || secret()) {
+  <mat-icon aria-hidden="false" matSuffix [fontIcon]="iconHandler()" (click)="onIconClick($event)" />
   } @if (control.errors) {
   <mat-error>{{ control.errors | stxErrorMessage : customErrors(): name() }}</mat-error>
   }
