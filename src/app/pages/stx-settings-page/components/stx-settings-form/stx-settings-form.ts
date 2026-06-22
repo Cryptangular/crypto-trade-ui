@@ -4,7 +4,7 @@ import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angula
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { StxButton } from '../../../../shared/ui/stx-button/stx-button';
 import { ToastService } from '../../../../../core/services/toast/toast-service';
-import { StxSettings } from '../../services/stx-settings';
+import { StxSettingsService } from '../../services/stx-settings.service';
 import { StxBtnConfig } from '../../../../shared/ui/stx-button/stx-button.types';
 import { finalize, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -31,7 +31,7 @@ export class StxSettingsForm {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
-  private readonly settingsService = inject(StxSettings);
+  private readonly settingsService = inject(StxSettingsService);
 
   protected readonly hasSecret = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);

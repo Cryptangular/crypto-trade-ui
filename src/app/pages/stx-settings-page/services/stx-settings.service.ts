@@ -8,7 +8,7 @@ import { SETTINGS_ENDPOINT } from '../constants/settings.constants';
 @Injectable({
   providedIn: 'root',
 })
-export class StxSettings {
+export class StxSettingsService {
   private readonly httpClient = inject(HttpClient);
   private readonly prefix = SETTINGS_ENDPOINT;
   private readonly url = `${environment.apiUrl}/${this.prefix}`;
