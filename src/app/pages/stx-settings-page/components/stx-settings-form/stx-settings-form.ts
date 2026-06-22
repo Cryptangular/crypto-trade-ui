@@ -6,7 +6,7 @@ import { StxButton } from '../../../../shared/ui/stx-button/stx-button';
 import { ToastService } from '../../../../../core/services/toast/toast-service';
 import { StxSettingsService } from '../../services/stx-settings.service';
 import { StxBtnConfig } from '../../../../shared/ui/stx-button/stx-button.types';
-import { finalize, Observable } from 'rxjs';
+import { catchError, EMPTY, finalize, Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SETTINGS_ERROR_MESSAGES, SETTINGS_MESSAGES } from '../../constants/settings.constants';
 import { SettingsResponse } from '../../types/settings';
@@ -64,14 +64,15 @@ export class StxSettingsForm implements OnInit {
     request$
       .pipe(
         takeUntilDestroyed(this.destroyRef),
+        catchError((error: Error) => {
+          this.toastService.warning('Error', this.getErrorMessage(error));
+          return EMPTY;
+        }),
         finalize(() => this.isLoading.set(false))
       )
       .subscribe({
         next: response => {
           successCb(response.code);
-        },
-        error: (error: unknown) => {
-          this.toastService.warning('Error', this.getErrorMessage(error));
         },
       });
   }
