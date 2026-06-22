@@ -9,5 +9,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TradePage {
-  readonly symbol = input<string>('');
+  readonly pair = input<string>('');
 }

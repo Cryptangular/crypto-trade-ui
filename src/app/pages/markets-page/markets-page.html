@@ -3,11 +3,11 @@
     <h2>Top Tokens by Market Capitalization</h2>
   </div>
 
-  <table class="crypto-table mat-elevation-z0" mat-table [dataSource]="tokens()">
+  <table class="crypto-table mat-elevation-z0" mat-table [dataSource]="tokens()" [trackBy]="trackBySymbol">
     <ng-container matColumnDef="coin">
       <th *matHeaderCellDef mat-header-cell>Name</th>
       <td *matCellDef="let token" class="coin-cell" mat-cell>
-        <span class="base-asset">{{ token.baseAsset }}</span>
+        <span class="base-asset">{{ token.baseAsset }} / {{token.quoteAsset}}</span>
       </td>
     </ng-container>
 

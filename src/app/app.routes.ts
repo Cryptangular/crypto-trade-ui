@@ -14,7 +14,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'trade/:symbol',
+    path: 'trade/:pair',
     loadComponent: () => import('./pages/trade-page/trade-page').then(m => m.TradePage),
     canActivate: [authGuard],
   },
