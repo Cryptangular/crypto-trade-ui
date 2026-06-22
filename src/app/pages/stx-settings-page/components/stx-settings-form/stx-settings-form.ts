@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { StxInput } from '../../../../shared/ui/stx-input/stx-input';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCard, MatCardActions, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
@@ -27,7 +27,7 @@ import { SettingsResponse } from '../../types/settings';
   styleUrl: './stx-settings-form.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StxSettingsForm {
+export class StxSettingsForm implements OnInit {
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly toastService = inject(ToastService);
@@ -48,21 +48,6 @@ export class StxSettingsForm {
     apiKey: ['', [Validators.required, Validators.minLength(10)]],
     secretKey: ['', [Validators.required, Validators.minLength(10)]],
   });
-
-  constructor() {
-    this.settingsService
-      .getSettings()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(response => {
-        if (!response.data) return;
-
-        const { apiKey, hasSecret } = response.data;
-        this.hasSecret.set(hasSecret);
-        if (!apiKey) return;
-
-        this.settingsForm.setValue({ apiKey, secretKey: '' });
-      });
-  }
 
   reset(): void {
     this.settingsForm.patchValue({ secretKey: '' });
@@ -127,5 +112,20 @@ export class StxSettingsForm {
     }
 
     return SETTINGS_MESSAGES.SOMETHING_WENT_WRONG;
+  }
+
+  ngOnInit(): void {
+    this.settingsService
+      .getSettings()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(response => {
+        if (!response.data) return;
+
+        const { apiKey, hasSecret } = response.data;
+        this.hasSecret.set(hasSecret);
+        if (!apiKey) return;
+
+        this.settingsForm.setValue({ apiKey, secretKey: '' });
+      });
   }
 }
