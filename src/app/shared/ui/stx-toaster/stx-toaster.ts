@@ -13,6 +13,7 @@ import {
 import { ToastService } from '../../../../core/services/toast/toast-service';
 import { StxButton } from '../stx-button/stx-button';
 import { StxBtnConfig } from '../stx-button/stx-button.types';
+import { STX_TOASTER_CONFIG } from './stx-toaster-config';
 
 @Component({
   selector: 'stx-toaster',
@@ -26,16 +27,17 @@ export class StxToaster {
   protected readonly openedToastId = signal<number | null>(null);
   protected readonly animatingToastIds = signal<number[]>([]);
   protected readonly isClearingAll = signal(false);
+  private readonly config = inject(STX_TOASTER_CONFIG);
 
   private readonly scrollContainer = viewChild<ElementRef<HTMLUListElement>>('scrollContainer');
 
   protected readonly closeAllBtnConfig: StxBtnConfig = {
-    icon: 'close',
-    label: 'close all',
+    icon: this.config.closeAllIcon,
+    label: this.config.closeAllLabel,
     appearance: 'tonal',
   };
   protected readonly closeToastBtnConfig: StxBtnConfig = {
-    icon: 'close',
+    icon: this.config.closeIcon,
     appearance: 'icon',
   };
 
@@ -43,7 +45,7 @@ export class StxToaster {
     afterRenderEffect(() => {
       this.toast.toasts();
       const el = this.scrollContainer()?.nativeElement;
-      el?.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
+      el?.scrollTo({ top: el.scrollHeight, behavior: this.config.scrollBehavior });
     });
   }
 
