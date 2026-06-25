@@ -96,7 +96,7 @@ export class RegisterForm {
       )
       .subscribe({
         next: () => {
-          this.router.navigate(['/markets-page']);
+          this.router.navigate(['/markets']);
         },
       });
   }
