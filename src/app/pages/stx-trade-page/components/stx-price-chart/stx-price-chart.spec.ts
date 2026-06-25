@@ -15,16 +15,23 @@ if (typeof globalThis !== 'undefined') {
 }
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { Observable, of } from 'rxjs';
 import { StxPriceChart } from './stx-price-chart';
+import { StxTradeApiService } from '../../services/stx-trade-api-service';
+import { CandlestickData } from '../../models/stx-trade-model';
 
 describe('StxPriceChart', () => {
   let component: StxPriceChart;
   let fixture: ComponentFixture<StxPriceChart>;
 
+  const tradeApiMock = {
+    getHistoricalKlines: (): Observable<CandlestickData[]> => of([]),
+  };
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [StxPriceChart],
+      providers: [{ provide: StxTradeApiService, useValue: tradeApiMock }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(StxPriceChart);
