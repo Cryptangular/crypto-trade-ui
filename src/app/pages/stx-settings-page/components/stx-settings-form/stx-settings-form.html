@@ -1,0 +1,37 @@
+<mat-card class="setting-form__container">
+  <mat-card-header class="setting-form__header">
+    <mat-card-title>Settings</mat-card-title>
+  </mat-card-header>
+
+  <form class="setting-form__form" [formGroup]="settingsForm" (ngSubmit)="onSubmit()">
+    <mat-card-content class="setting-form__content">
+      <stx-input
+        appearance="fill"
+        formControlName="apiKey"
+        icon="password"
+        id="api-key"
+        label="API key"
+        name="api-key"
+        type="text" />
+
+      <stx-input
+        appearance="fill"
+        formControlName="secretKey"
+        id="security-key"
+        label="Security key"
+        name="security-key"
+        [secret]="true"
+        [type]="'password'" />
+    </mat-card-content>
+
+    <mat-card-actions>
+      <stx-button type="submit" [btnConfig]="setSettingsBtnConfig" [isDisabled]="settingsForm.invalid || isLoading()" />
+
+      <stx-button
+        type="button"
+        [btnConfig]="removeSettingsBtnConfig"
+        [isDisabled]="isLoading() || !hasSecret()"
+        (clicked)="removeSettings()" />
+    </mat-card-actions>
+  </form>
+</mat-card>
