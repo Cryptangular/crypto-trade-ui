@@ -16,7 +16,8 @@ export class CryptoMarketService {
   private socket!: Socket;
 
   constructor() {
-    this.initWebSocket();
+    // this.initWebSocket();
+    this.loadInitialMarketData();
   }
 
   private readonly tokensMap = signal<Map<string, MarketToken>>(new Map());

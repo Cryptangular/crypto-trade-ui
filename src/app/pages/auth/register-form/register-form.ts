@@ -96,7 +96,7 @@ export class RegisterForm {
       )
       .subscribe({
         next: () => {
-          this.router.navigate(['/markets-page']);
+          this.router.navigate(['/markets']);
         },
       });
   }
@@ -104,17 +104,14 @@ export class RegisterForm {
   private onSubmitError(err: Error): void {
     this.toastService.danger('error occurred', err.message);
 
-    this.registerForm.patchValue({ password: '', confirmPassword: '' });
+    const currentEmail = this.registerForm.get('email')?.value;
 
-    const passwordCtrl = this.registerForm.get('password');
-    const confirmCtrl = this.registerForm.get('confirmPassword');
+    this.registerForm.reset();
 
-    passwordCtrl?.setErrors(null);
-    confirmCtrl?.setErrors(null);
+    const emailCtrl = this.registerForm.get('email');
+    emailCtrl?.setValue(currentEmail, { emitEvent: false });
 
-    passwordCtrl?.markAsUntouched();
-    confirmCtrl?.markAsUntouched();
-
-    this.registerForm.updateValueAndValidity();
+    emailCtrl?.setErrors({ emailTaken: true });
+    emailCtrl?.markAsTouched();
   }
 }
