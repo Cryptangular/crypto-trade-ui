@@ -28,7 +28,11 @@
         [customErrors]="passwordErrors" />
 
       <div class="form-actions">
-        <stx-button type="submit" [btnConfig]="submitBtnConfig()" [isDisabled]="loginForm.invalid || isLoading()" />
+        <stx-button
+          type="submit"
+          [btnConfig]="submitBtnConfig()"
+          [isDisabled]="loginForm.invalid || isLoading()"
+          (click)="onSubmit()" />
 
         <stx-button [btnConfig]="registerLinkConfig" />
       </div>
