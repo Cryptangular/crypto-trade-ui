@@ -1,3 +1,5 @@
+@use '@angular/material' as mat;
+
 $bg-main: #111417;
 $bg-table: #161a1e;
 $bg-row-hover: #1e2329;
@@ -39,8 +41,8 @@ table.crypto-table {
 
   th.mat-mdc-header-cell {
     color: $text-muted;
-    font-size: 12px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 700;
     border-bottom: 1px solid $border-color;
     padding: 12px 16px;
   }
@@ -61,40 +63,20 @@ table.crypto-table {
       background-color: $bg-row-hover;
     }
   }
-}
 
-.coin-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 500;
-
-  .base-asset {
-    color: $text-primary;
+  td.positive-text {
+    color: $binance-green;
+    font-weight: 500;
   }
 
-  .quote-asset {
+  td.negative-text {
+    color: $binance-red;
+    font-weight: 500;
+  }
+
+  td.loading {
+    text-align: center;
     color: $text-muted;
-    font-size: 12px;
+    padding: 40px;
   }
-}
-
-.text-right {
-  text-align: right;
-}
-
-table.crypto-table td.positive-text {
-  color: $binance-green;
-  font-weight: 500;
-}
-
-table.crypto-table td.negative-text {
-  color: $binance-red;
-  font-weight: 500;
-}
-
-table.crypto-table td.loading {
-  text-align: center;
-  color: $text-muted;
-  padding: 40px;
 }

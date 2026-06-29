@@ -23,8 +23,12 @@ export class MarketsService {
 
   readonly total = signal<number>(0);
 
-  loadMarketData(page: number, limit: number): void {
-    const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+  loadMarketData(page: number, limit: number, sortBy?: string, sortOrder?: string): void {
+    let params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+
+    if (sortBy && sortOrder) {
+      params = params.set('sortBy', sortBy).set('sortOrder', sortOrder);
+    }
 
     this.http.get<MarketResponse>(this.apiUrl, { params }).subscribe({
       next: res => {
