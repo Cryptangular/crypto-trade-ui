@@ -1,0 +1,19 @@
+@use 'variables' as v;
+
+.stx-trade-page__header {
+  padding: v.$stx-space-xl v.$stx-space-md;
+  background-color: var(--mat-sys-surface-container);
+  border-radius: v.$stx-modal-radius;
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+
+  h1,
+  p {
+    margin: 0;
+  }
+
+  p {
+    font-size: large;
+  }
+}
