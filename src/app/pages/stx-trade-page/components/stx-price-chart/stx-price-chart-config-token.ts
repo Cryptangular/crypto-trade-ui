@@ -17,7 +17,7 @@ const DEFAULT_CHART_CONFIG: PriceChartConfig = {
   themeLinesColor: '#27272A',
   candlesUpColor: '#2BAF42',
   candlesDownColor: '#FFBA38',
-  candlesBorderVisible: true,
+  candlesBorderVisible: false,
 };
 
 export const PRICE_CHART_CONFIG = new InjectionToken<PriceChartConfig>('PriceChartConfig', {

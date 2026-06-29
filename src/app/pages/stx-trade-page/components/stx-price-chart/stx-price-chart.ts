@@ -1,4 +1,5 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -52,14 +53,14 @@ export class StxPriceChart {
     effect(() => {
       const chartData = this.serverData();
 
-      if (!this.chart) {
-        this.initChart();
-      }
-
       if (chartData && chartData.length > 0) {
         this.candlestickSeries?.setData(chartData);
         this.chart?.timeScale().fitContent();
       }
+    });
+
+    afterNextRender(() => {
+      this.initChart();
     });
 
     this.destroyRef.onDestroy(() => {
