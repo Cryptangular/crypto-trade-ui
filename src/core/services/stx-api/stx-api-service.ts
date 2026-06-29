@@ -9,7 +9,7 @@ import { ToastService } from '../toast/toast-service';
 })
 export class StxApiService {
   private http = inject(HttpClient);
-  private readonly baseUrl = environment.binanceApiUrl;
+  private readonly baseUrl = environment.apiUrl;
   private toaster = inject(ToastService);
 
   get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {

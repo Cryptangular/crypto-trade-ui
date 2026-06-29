@@ -4,31 +4,34 @@ import {
   DestroyRef,
   effect,
   ElementRef,
-  HostListener,
   inject,
   input,
-  OnInit,
   signal,
   viewChild,
 } from '@angular/core';
 import { CandlestickSeries, createChart, IChartApi, ISeriesApi } from 'lightweight-charts';
 import { StxTradeApiService } from '../../services/stx-trade-api-service';
 import { CandlestickData } from '../../models/stx-trade-model';
+import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 
 @Component({
   selector: 'stx-price-chart',
   standalone: true,
   templateUrl: './stx-price-chart.html',
   styleUrl: './stx-price-chart.scss',
+  imports: [MatButtonToggleModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(window:resize)': 'onResize()',
+  },
 })
-export class StxPriceChart implements OnInit {
+export class StxPriceChart {
   private readonly chartContainer = viewChild.required<ElementRef<HTMLDivElement>>('chartContainer');
   private readonly tradeApi = inject(StxTradeApiService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly symbol = input<string>('BNBUSDT');
-  readonly interval = input<string>('1d');
+  readonly interval = signal<string>('1d');
 
   readonly serverData = signal<CandlestickData[]>([]);
 
@@ -36,6 +39,14 @@ export class StxPriceChart implements OnInit {
   private candlestickSeries?: ISeriesApi<'Candlestick'>;
 
   constructor() {
+    effect(onCleanUp => {
+      const klinesSub = this.tradeApi
+        .getHistoricalKlines(this.symbol(), this.interval())
+        .subscribe({ next: klines => this.serverData.set(klines) });
+
+      onCleanUp(() => klinesSub.unsubscribe());
+    });
+
     effect(() => {
       const chartData = this.serverData();
 
@@ -54,21 +65,14 @@ export class StxPriceChart implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.loadData();
+  onToggleChange($event: MatButtonToggleChange): void {
+    this.interval.set($event.value);
   }
 
-  @HostListener('window:resize')
   onResize(): void {
     if (this.chart) {
       this.chart.resize(window.innerWidth, window.innerHeight);
     }
-  }
-
-  private loadData(): void {
-    this.tradeApi
-      .getHistoricalKlines(this.symbol(), this.interval())
-      .subscribe({ next: klines => this.serverData.set(klines) });
   }
 
   private initChart(): void {
@@ -77,7 +81,7 @@ export class StxPriceChart implements OnInit {
     this.chart = createChart(container, {
       width: container.clientWidth,
       height: 400,
-      layout: { background: { color: '#141416' }, textColor: '#ADAABE' },
+      layout: { background: { color: '#18181c' }, textColor: '#ADAABE' },
       grid: { vertLines: { color: '#27272A' }, horzLines: { color: '#27272A' } },
     });
 
