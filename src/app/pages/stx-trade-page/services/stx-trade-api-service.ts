@@ -5,9 +5,7 @@ import { HttpParams } from '@angular/common/http';
 import { CandlestickData } from '../models/stx-trade-model';
 import { Time } from 'lightweight-charts';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class StxTradeApiService {
   private api = inject(StxApiService);
 

@@ -13,6 +13,7 @@ import { CandlestickSeries, createChart, IChartApi, ISeriesApi } from 'lightweig
 import { StxTradeApiService } from '../../services/stx-trade-api-service';
 import { CandlestickData } from '../../models/stx-trade-model';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
+import { PRICE_CHART_CONFIG } from './stx-price-chart-config-token';
 
 @Component({
   selector: 'stx-price-chart',
@@ -29,6 +30,7 @@ export class StxPriceChart {
   private readonly chartContainer = viewChild.required<ElementRef<HTMLDivElement>>('chartContainer');
   private readonly tradeApi = inject(StxTradeApiService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly chartConfig = inject(PRICE_CHART_CONFIG);
 
   readonly symbol = input<string>('BNBUSDT');
   readonly interval = signal<string>('1d');
@@ -77,20 +79,21 @@ export class StxPriceChart {
 
   private initChart(): void {
     const container = this.chartContainer().nativeElement;
+    const cfg = this.chartConfig;
 
     this.chart = createChart(container, {
       width: container.clientWidth,
-      height: 400,
-      layout: { background: { color: '#18181c' }, textColor: '#ADAABE' },
-      grid: { vertLines: { color: '#27272A' }, horzLines: { color: '#27272A' } },
+      height: cfg.chartHeight,
+      layout: { background: { color: cfg.themeBackground }, textColor: cfg.themeTextColor },
+      grid: { vertLines: { color: cfg.themeLinesColor }, horzLines: { color: cfg.themeLinesColor } },
     });
 
     this.candlestickSeries = this.chart.addSeries(CandlestickSeries, {
-      upColor: '#2BAF42',
-      downColor: '#FFBA38',
-      borderVisible: false,
-      wickUpColor: '#2BAF42',
-      wickDownColor: '#FFBA38',
+      upColor: cfg.candlesUpColor,
+      downColor: cfg.candlesDownColor,
+      borderVisible: cfg.candlesBorderVisible,
+      wickUpColor: cfg.candlesUpColor,
+      wickDownColor: cfg.candlesUpColor,
     });
   }
 
