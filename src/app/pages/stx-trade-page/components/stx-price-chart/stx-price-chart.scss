@@ -1,26 +1,26 @@
 @use '@angular/material' as mat;
 @use 'sass:map';
+@use 'variables' as v;
 
 .price-chart {
-  padding: 20px 0;
-  margin: 10px;
+  padding: v.$stx-space-md v.$stx-space-none;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: v.$stx-space-md;
   background-color: var(--mat-sys-surface-container);
-  border-radius: 16px;
+  border-radius: v.$stx-card-radius;
   box-sizing: border-box;
 
   &__toggle-bar {
     display: flex;
-    gap: 8px;
+    gap: v.$stx-space-sm;
     background-color: var(--mat-sys-surface);
-    padding: 5px;
+    padding: v.$stx-space-sm;
     border: none;
     box-shadow: none;
     overflow: visible;
     align-self: flex-end;
-    margin-right: 20px;
+    margin-right: v.$stx-space-md;
 
     @include mat.button-toggle-overrides(
       (
@@ -30,11 +30,11 @@
     );
 
     mat-button-toggle {
-      border-radius: 20px;
+      border-radius: v.$stx-radius-full;
       border: none;
 
       .mat-button-toggle-button {
-        border-radius: 20px;
+        border-radius: v.$stx-radius-full;
       }
     }
   }
