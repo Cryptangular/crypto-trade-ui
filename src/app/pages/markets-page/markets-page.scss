@@ -8,6 +8,8 @@ $binance-red: #f6465d;
 $border-color: #2b3139;
 
 .markets-container {
+  max-width: 1440px;
+  margin: 0 auto;
   background-color: $bg-main;
   color: $text-primary;
   padding: 32px;

@@ -1,13 +1,13 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { MarketResponse, MarketToken } from '../../../shared/types/market.types';
 import { environment } from '../../../../environments/environment';
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 
 @Injectable({
   providedIn: 'root',
 })
-export class CryptoMarketService {
+export class MarketsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/tokens`;
 
@@ -17,23 +17,24 @@ export class CryptoMarketService {
 
   constructor() {
     // this.initWebSocket();
-    this.loadInitialMarketData();
   }
 
-  private readonly tokensMap = signal<Map<string, MarketToken>>(new Map());
-  readonly allTokens = computed(() => Array.from(this.tokensMap().values()));
+  readonly tokens = signal<MarketToken[]>([]);
 
-  loadInitialMarketData(): void {
-    this.http.get<MarketResponse>(this.apiUrl).subscribe({
+  readonly total = signal<number>(0);
+
+  loadMarketData(page: number, limit: number): void {
+    const params = new HttpParams().set('page', page.toString()).set('limit', limit.toString());
+
+    this.http.get<MarketResponse>(this.apiUrl, { params }).subscribe({
       next: res => {
-        const currentMap = new Map<string, MarketToken>();
-        res.data.forEach(token => currentMap.set(token.symbol, token));
-        this.tokensMap.set(currentMap);
+        this.tokens.set(res.data);
+        this.total.set(res.total);
       },
       error: err => console.error('Failed to load REST market data', err),
     });
   }
-
+  /*
   private initWebSocket(): void {
     this.socket = io(this.wsUrl, {
       transports: ['websocket'],
@@ -67,5 +68,5 @@ export class CryptoMarketService {
     this.socket.on('disconnect', reason => {
       console.warn('Disconnected from Market WebSocket:', reason);
     });
-  }
+  }*/
 }

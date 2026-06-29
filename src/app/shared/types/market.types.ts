@@ -10,4 +10,7 @@ export type MarketToken = {
 
 export type MarketResponse = {
   data: MarketToken[];
+  total: number;
+  page: number;
+  limit: number;
 };
