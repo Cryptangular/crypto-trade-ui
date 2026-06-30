@@ -3,12 +3,13 @@ import { RouterOutlet } from '@angular/router';
 import { StxToaster } from './shared/ui/stx-toaster/stx-toaster';
 import { StxHeader } from './shared/components/stx-header/stx-header';
 import { StxFooter } from './shared/components/stx-footer/stx-footer';
+import { StxPriceChart } from './pages/stx-trade-page/components/stx-price-chart/stx-price-chart';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   selector: 'app-root',
-  imports: [RouterOutlet, StxToaster, StxHeader, StxFooter],
+  imports: [RouterOutlet, StxToaster, StxHeader, StxFooter, StxPriceChart],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
