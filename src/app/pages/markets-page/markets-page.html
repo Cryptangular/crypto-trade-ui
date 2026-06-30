@@ -1,1 +1,60 @@
-<p>markets-page works!</p>
+<div class="markets-container">
+  <div class="markets-header">
+    <h2>Top Tokens by Market Capitalization</h2>
+  </div>
+
+  <table
+    class="crypto-table mat-elevation-z0"
+    mat-table
+    matSort
+    [dataSource]="tokens()"
+    [trackBy]="trackBySymbol"
+    (matSortChange)="onSortChange($event)">
+    <ng-container matColumnDef="coin">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>Name</th>
+      <td *matCellDef="let token" mat-cell>
+        <span class="base-asset">{{ token.baseAsset }} / {{ token.quoteAsset }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>Price</th>
+      <td *matCellDef="let token" mat-cell>${{ token.price}}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="change24h">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>Change</th>
+      <td
+        *matCellDef="let token"
+        mat-cell
+        [class.negative-text]="token.change24h < 0"
+        [class.positive-text]="token.change24h >= 0">
+        {{ token.change24h >= 0 ? '+' : '' }}{{ token.change24h}}%
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="volume">
+      <th *matHeaderCellDef mat-header-cell mat-sort-header>24h Volume</th>
+      <td *matCellDef="let token" mat-cell>${{ token.volume24h}}</td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+    <tr
+      *matRowDef="let row; columns: displayedColumns;"
+      class="crypto-row"
+      mat-row
+      (click)="navigateToTrade(row.symbol)"></tr>
+
+    <tr *matNoDataRow class="mat-row">
+      <td class="mat-cell loading" [attr.colspan]="displayedColumns.length">Loading market data...</td>
+    </tr>
+  </table>
+
+  <mat-paginator
+    aria-label="Select page of tokens"
+    [length]="totalTokens()"
+    [pageIndex]="pageIndex()"
+    [pageSize]="pageSize()"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)" />
+</div>

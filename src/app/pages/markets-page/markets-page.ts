@@ -1,10 +1,84 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MarketsService } from './services/markets.service';
+import { Router } from '@angular/router';
+import { MarketToken } from './types/markets.types';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { catchError, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'stx-markets-page',
-  imports: [],
+  standalone: true,
+  imports: [MatTableModule, MatPaginatorModule, MatSortModule],
+  providers: [MarketsService],
   templateUrl: './markets-page.html',
   styleUrl: './markets-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MarketsPage {}
+export class MarketsPage {
+  private readonly marketsService = inject(MarketsService);
+  private readonly router = inject(Router);
+
+  readonly displayedColumns: string[] = ['coin', 'price', 'change24h', 'volume'];
+
+  readonly pageIndex = signal<number>(0);
+  readonly pageSize = signal<number>(20);
+
+  readonly sortBy = signal<string | undefined>(undefined);
+  readonly sortOrder = signal<'asc' | 'desc'>('asc');
+
+  readonly isLoading = signal<boolean>(false);
+
+  readonly queryParams = computed(() => ({
+    page: this.pageIndex() + 1,
+    limit: this.pageSize(),
+    sortBy: this.sortBy(),
+    sortOrder: this.sortOrder(),
+  }));
+
+  private readonly marketData$ = toObservable(this.queryParams).pipe(
+    tap(() => this.isLoading.set(true)),
+    switchMap(params =>
+      this.marketsService.getMarketData(params).pipe(
+        catchError(err => {
+          console.error('Failed to load market data', err);
+
+          return of({ data: [], total: 0 });
+        })
+      )
+    ),
+    tap(() => this.isLoading.set(false))
+  );
+
+  readonly marketResponse = toSignal(this.marketData$);
+
+  readonly tokens = computed(() => this.marketResponse()?.data ?? []);
+  readonly totalTokens = computed(() => this.marketResponse()?.total ?? 0);
+
+  protected onPageChange(event: PageEvent): void {
+    this.pageIndex.set(event.pageIndex);
+    this.pageSize.set(event.pageSize);
+  }
+
+  protected onSortChange(sortState: Sort): void {
+    if (!sortState.direction) {
+      this.sortBy.set(undefined);
+      this.sortOrder.set('asc');
+    }
+    {
+      const backendField = sortState.active === 'coin' ? 'baseAsset' : sortState.active;
+      this.sortBy.set(backendField);
+      this.sortOrder.set(sortState.direction as 'asc' | 'desc');
+    }
+  }
+
+  protected trackBySymbol(index: number, token: MarketToken): string {
+    return token.symbol;
+  }
+
+  protected navigateToTrade(pair: string): void {
+    this.router.navigate(['/trade', pair]);
+  }
+}

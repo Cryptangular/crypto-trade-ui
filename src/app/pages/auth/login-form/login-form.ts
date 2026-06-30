@@ -67,7 +67,7 @@ export class LoginForm {
         })
       )
       .subscribe({
-        next: () => this.router.navigate(['/markets-page']),
+        next: () => this.router.navigate(['/markets']),
       });
   }
 
