@@ -14,3 +14,10 @@ export type MarketResponse = {
   page: number;
   limit: number;
 };
+
+export type MarketQueryParams = {
+  page: number;
+  limit: number;
+  sortBy?: string;
+  sortOrder?: string;
+};
