@@ -12,6 +12,7 @@ import { catchError, of, switchMap, tap } from 'rxjs';
   selector: 'stx-markets-page',
   standalone: true,
   imports: [MatTableModule, MatPaginatorModule, MatSortModule],
+  providers: [MarketsService],
   templateUrl: './markets-page.html',
   styleUrl: './markets-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
