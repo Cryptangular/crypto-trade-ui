@@ -96,6 +96,21 @@ export class StxPriceChart {
       wickUpColor: cfg.candlesUpColor,
       wickDownColor: cfg.candlesUpColor,
     });
+
+    const currentLocale = window.navigator.languages[0];
+    const myPriceFormatter = Intl.NumberFormat(currentLocale, {
+      style: 'currency',
+      currency: 'USD',
+    }).format;
+
+    this.chart.applyOptions({
+      localization: {
+        priceFormatter: myPriceFormatter,
+      },
+      layout: {
+        fontFamily: "'Saira Semi Condensed', sans-serif",
+      },
+    });
   }
 
   private destroyChart(): void {
