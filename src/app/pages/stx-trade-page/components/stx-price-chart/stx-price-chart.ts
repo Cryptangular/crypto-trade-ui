@@ -45,7 +45,6 @@ export class StxPriceChart {
 
       if (chartData && chartData.length > 0) {
         this.candlestickSeries?.setData(chartData);
-        this.chart?.timeScale().fitContent();
       }
     });
 

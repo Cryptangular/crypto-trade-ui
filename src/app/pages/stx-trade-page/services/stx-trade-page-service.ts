@@ -1,26 +1,27 @@
-import { effect, inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { inject, Injectable, signal, WritableSignal } from '@angular/core';
 import { WebSocketMessage, WebSocketService } from './stx-trade-ws.service';
-import { KlineData } from '../stx-trade-page';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { StxTradeApiService } from './stx-trade-api-service';
 import { CandlestickData } from '../models/stx-trade-model';
+import { Time } from 'lightweight-charts';
+import { combineLatest, switchMap } from 'rxjs';
 
 @Injectable()
 export class StxTradePageService {
   private wsService = inject(WebSocketService);
   private tradeApiService = inject(StxTradeApiService);
 
-  private readonly _klineData: WritableSignal<KlineData | undefined> = signal(undefined);
+  private readonly _klineData: WritableSignal<CandlestickData | undefined> = signal(undefined);
   private readonly _priceChange = signal<number>(0);
   private readonly _interval = signal('1m');
+  private readonly _klinesDataArray = signal<CandlestickData[]>([]);
 
   readonly klineData = this._klineData.asReadonly();
   readonly priceChange = this._priceChange.asReadonly();
   readonly interval = this._interval.asReadonly();
+  readonly klinesDataArray = this._klinesDataArray.asReadonly();
 
   readonly symbol = signal('BTCUSDT');
-
-  readonly klinesData = signal<CandlestickData[]>([]);
 
   start(): void {
     this.wsService.connect('wss://stream.binance.com:9443/ws');
@@ -28,12 +29,14 @@ export class StxTradePageService {
   }
 
   constructor() {
-    effect(onCleanUp => {
-      const klinesSub = this.tradeApiService
-        .getHistoricalKlines(this.symbol(), this.interval())
-        .subscribe({ next: klines => this.klinesData.set(klines) });
-      onCleanUp(() => klinesSub.unsubscribe());
-    });
+    combineLatest([toObservable(this.symbol), toObservable(this.interval)])
+      .pipe(
+        switchMap(([symbol, interval]) => this.tradeApiService.getHistoricalKlines(symbol, interval)),
+        takeUntilDestroyed()
+      )
+      .subscribe(historicalKlines => {
+        this._klinesDataArray.set(historicalKlines);
+      });
 
     const ws = this.wsService;
 
@@ -41,18 +44,16 @@ export class StxTradePageService {
       next: (m: WebSocketMessage) => {
         if (m.e === 'kline') {
           const formattedKline = {
-            type: m.e,
-            time: m.E,
-            symbol: m.s,
-            kline: {
-              time: m['k']['t'],
-              open: m['k']['o'],
-              high: m['k']['h'],
-              low: m['k']['l'],
-              close: m['k']['c'],
-            },
+            time: m['k']['t'] as Time,
+            open: Number(m['k']['o']),
+            high: Number(m['k']['h']),
+            low: Number(m['k']['l']),
+            close: Number(m['k']['c']),
           };
+
           this._klineData.set(formattedKline);
+
+          this.updateKlinesArray(formattedKline);
         } else if (m.e === '24hrTicker') {
           const price = m['c'];
           this._priceChange.set(price);
@@ -63,6 +64,30 @@ export class StxTradePageService {
 
   updateInterval(interval: string): void {
     this._interval.set(interval);
+    this.wsService.unsubscribeFromStreams([`btcusdt@kline_${this.interval()}`]);
+    this.wsService.subscribeToStreams([`btcusdt@kline_${this.interval()}`]);
+  }
+
+  updateKlinesArray(newKline: CandlestickData): void {
+    if (!newKline) return;
+
+    this._klinesDataArray.update(oldArray => {
+      if (oldArray.length === 0) return [newKline];
+
+      const lastCandle = oldArray.at(-1)!;
+
+      if (lastCandle.time === newKline.time) {
+        const updatedArray = [...oldArray];
+        updatedArray[updatedArray.length - 1] = newKline;
+        return updatedArray;
+      }
+
+      if (newKline.time <= lastCandle.time) {
+        return oldArray;
+      }
+
+      return [...oldArray, newKline].slice(-500);
+    });
   }
 
   close(): void {

@@ -36,7 +36,7 @@ export class StxTradePage implements OnInit, OnDestroy {
   readonly kline = this.tradePageService.klineData;
   readonly price = this.tradePageService.priceChange;
   readonly pair = input<string>('');
-  readonly klinesData = this.tradePageService.klinesData;
+  readonly klinesData = this.tradePageService.klinesDataArray;
 
   ngOnInit(): void {
     this.tradePageService.start();
