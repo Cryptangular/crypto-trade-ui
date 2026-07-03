@@ -1,10 +1,9 @@
-import { WebSocketMessage, WebSocketService } from './services/stx-trade-ws.service';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit, signal, WritableSignal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { StxPriceChart } from './components/stx-price-chart/stx-price-chart';
 import { StxTradeApiService } from './services/stx-trade-api-service';
 import { StxTradePageHeader } from './components/stx-trade-page-header/stx-trade-page-header';
 import { CandlestickData } from './models/stx-trade-model';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { StxTradePageService } from './services/stx-trade-page-service';
 
 export type KlineData = {
   type: string;
@@ -16,53 +15,22 @@ export type KlineData = {
 @Component({
   selector: 'stx-trade-page',
   imports: [StxPriceChart, StxTradePageHeader],
-  providers: [StxTradeApiService],
+  providers: [StxTradeApiService, StxTradePageService],
   templateUrl: './stx-trade-page.html',
   styleUrl: './stx-trade-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StxTradePage implements OnInit, OnDestroy {
-  private wsService = inject(WebSocketService);
-  isConnected = false;
-  readonly data = signal(null);
-  readonly klineData: WritableSignal<KlineData | undefined> = signal(undefined);
-  readonly priceChange: WritableSignal<number> = signal(0);
+  private tradePageService = inject(StxTradePageService);
+
+  readonly kline = this.tradePageService.klineData;
+  readonly price = this.tradePageService.priceChange;
 
   ngOnInit(): void {
-    this.wsService.connect('wss://stream.binance.com:9443/ws/btcusdt@kline_1m');
-
-    this.wsService.connectionStatus$.pipe().subscribe(status => (this.isConnected = status));
-
-    this.wsService.subscribeToStreams(['btcusdt@kline_1m', 'btcusdt@ticker']);
-  }
-
-  constructor() {
-    const ws = this.wsService;
-    ws.messages$.pipe(takeUntilDestroyed()).subscribe({
-      next: (m: WebSocketMessage) => {
-        if (m.e === 'kline') {
-          const formattedKline = {
-            type: m.e,
-            time: m.E,
-            symbol: m.s,
-            kline: {
-              time: m['k']['t'],
-              open: m['k']['o'],
-              high: m['k']['h'],
-              low: m['k']['l'],
-              close: m['k']['c'],
-            },
-          };
-          this.klineData.set(formattedKline);
-        } else if (m.e === '24hrTicker') {
-          const price = m['c'];
-          this.priceChange.set(price);
-        }
-      },
-    });
+    this.tradePageService.start();
   }
 
   ngOnDestroy(): void {
-    this.wsService.disconnect();
+    this.tradePageService.close();
   }
 }
