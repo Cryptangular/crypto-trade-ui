@@ -1,5 +1,5 @@
 <section class="stx-trade-page">
   <!-- TODO: Replace hardcoded input values with dynamic data from StxTradeApi service and connect live WebSocket stream -->
-  <stx-trade-page-header [tradePairName]="pair()" [currentPrice]="12342" />
+  <stx-trade-page-header [tradePairName]="pair()" [currentPrice]="priceChange()" />
   <stx-price-chart />
 </section>
