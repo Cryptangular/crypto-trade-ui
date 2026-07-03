@@ -1,8 +1,8 @@
-import { inject, Injectable, signal, WritableSignal } from '@angular/core';
+import { computed, inject, Injectable, signal, untracked, WritableSignal } from '@angular/core';
 import { WebSocketMessage, WebSocketService } from './stx-trade-ws.service';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { StxTradeApiService } from './stx-trade-api-service';
-import { CandlestickData } from '../models/stx-trade-model';
+import { CandlestickData, PriceChange } from '../models/stx-trade-model';
 import { Time } from 'lightweight-charts';
 import { combineLatest, switchMap } from 'rxjs';
 
@@ -12,20 +12,23 @@ export class StxTradePageService {
   private tradeApiService = inject(StxTradeApiService);
 
   private readonly _klineData: WritableSignal<CandlestickData | undefined> = signal(undefined);
-  private readonly _priceChange = signal<number>(0);
+  private readonly _priceChange = signal<PriceChange | null>(null);
   private readonly _interval = signal('1m');
   private readonly _klinesDataArray = signal<CandlestickData[]>([]);
 
   readonly klineData = this._klineData.asReadonly();
-  readonly priceChange = this._priceChange.asReadonly();
   readonly interval = this._interval.asReadonly();
-  readonly klinesDataArray = this._klinesDataArray.asReadonly();
 
-  readonly symbol = signal('BTCUSDT');
+  readonly pageState = computed(() => ({
+    priceChange: this._priceChange(),
+    klines: untracked(() => this._klinesDataArray()),
+  }));
+
+  readonly symbol = signal('btcusdt');
 
   start(): void {
     this.wsService.connect('wss://stream.binance.com:9443/ws');
-    this.wsService.subscribeToStreams([`btcusdt@kline_${this.interval()}`, 'btcusdt@ticker']);
+    this.wsService.subscribeToStreams([`${this.symbol()}@kline_${this.interval()}`, `${this.symbol()}@ticker`]);
   }
 
   constructor() {
@@ -55,8 +58,16 @@ export class StxTradePageService {
 
           this.updateKlinesArray(formattedKline);
         } else if (m.e === '24hrTicker') {
-          const price = m['c'];
-          this._priceChange.set(price);
+          const priceChange = {
+            lastPrice: m['c'],
+            priceChange: m['p'],
+            percent: m['P'],
+            highPrice: m['h'],
+            lowPrice: m['l'],
+            volume: m['v'],
+            turnover: m['q'],
+          };
+          this._priceChange.set(priceChange);
         }
       },
     });
