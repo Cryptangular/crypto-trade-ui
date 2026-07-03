@@ -31,11 +31,12 @@ export type KlineData = {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StxTradePage implements OnInit, OnDestroy {
-  private tradePageService = inject(StxTradePageService);
+  tradePageService = inject(StxTradePageService);
 
   readonly kline = this.tradePageService.klineData;
   readonly price = this.tradePageService.priceChange;
   readonly pair = input<string>('');
+  readonly klinesData = this.tradePageService.klinesData;
 
   ngOnInit(): void {
     this.tradePageService.start();

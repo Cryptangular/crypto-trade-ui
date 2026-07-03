@@ -7,11 +7,10 @@ import {
   ElementRef,
   inject,
   input,
-  signal,
+  output,
   viewChild,
 } from '@angular/core';
 import { CandlestickSeries, createChart, IChartApi, ISeriesApi } from 'lightweight-charts';
-import { StxTradeApiService } from '../../services/stx-trade-api-service';
 import { CandlestickData } from '../../models/stx-trade-model';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PRICE_CHART_CONFIG } from './stx-price-chart-config-token';
@@ -29,29 +28,20 @@ import { PRICE_CHART_CONFIG } from './stx-price-chart-config-token';
 })
 export class StxPriceChart {
   private readonly chartContainer = viewChild.required<ElementRef<HTMLDivElement>>('chartContainer');
-  private readonly tradeApi = inject(StxTradeApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly chartConfig = inject(PRICE_CHART_CONFIG);
 
   readonly symbol = input<string>('BNBUSDT');
-  readonly interval = signal<string>('1d');
+  readonly intervalChange = output<string>();
 
-  readonly serverData = signal<CandlestickData[]>([]);
+  readonly klinesData = input<CandlestickData[]>([]);
 
   private chart?: IChartApi;
   private candlestickSeries?: ISeriesApi<'Candlestick'>;
 
   constructor() {
-    effect(onCleanUp => {
-      const klinesSub = this.tradeApi
-        .getHistoricalKlines(this.symbol(), this.interval())
-        .subscribe({ next: klines => this.serverData.set(klines) });
-
-      onCleanUp(() => klinesSub.unsubscribe());
-    });
-
     effect(() => {
-      const chartData = this.serverData();
+      const chartData = this.klinesData();
 
       if (chartData && chartData.length > 0) {
         this.candlestickSeries?.setData(chartData);
@@ -68,8 +58,8 @@ export class StxPriceChart {
     });
   }
 
-  onToggleChange($event: MatButtonToggleChange): void {
-    this.interval.set($event.value);
+  onIntervalChange($event: MatButtonToggleChange): void {
+    this.intervalChange.emit($event.value);
   }
 
   onResize(): void {
