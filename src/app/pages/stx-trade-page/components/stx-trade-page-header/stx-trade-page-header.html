@@ -1,4 +1,36 @@
 <header class="stx-trade-page__header">
-  <h1 class="stx-trade-page__header-title">{{tradePairName()}}</h1>
-  <p [stxPriceChange]="currentPrice()">{{currentPrice() | currency}}</p>
+  <div class="stx-trade-page__header-main">
+    <h1 class="stx-trade-page__header-title">{{ tradePairName() }}</h1>
+
+    @if (priceChange(); as data) {
+    <p class="stx-trade-page__header-price" [stxPriceChange]="data.lastPrice">{{ data.lastPrice | currency }}</p>
+    }
+  </div>
+
+  @if (priceChange(); as data) {
+  <div class="stx-trade-page__header-stats">
+    <dl class="stx-trade-stat-item">
+      <dt class="stx-trade-stat-item__label">24h Change</dt>
+
+      <dd class="stx-trade-stat-item__value" [stxPriceChange]="data.lastPrice">
+        {{ data.priceChange | number: '1.2-2'}} ({{ data.percent }}%)
+      </dd>
+    </dl>
+
+    <dl class="stx-trade-stat-item">
+      <dt class="stx-trade-stat-item__label">24h High</dt>
+      <dd class="stx-trade-stat-item__value">{{ data.highPrice | number: '1.2-2'}}</dd>
+    </dl>
+
+    <dl class="stx-trade-stat-item">
+      <dt class="stx-trade-stat-item__label">24h Low</dt>
+      <dd class="stx-trade-stat-item__value">{{ data.lowPrice | number: '1.2-2'}}</dd>
+    </dl>
+
+    <dl class="stx-trade-stat-item">
+      <dt class="stx-trade-stat-item__label">24h Volume</dt>
+      <dd class="stx-trade-stat-item__value">{{ data.volume | number: '1.2-2'}}</dd>
+    </dl>
+  </div>
+  }
 </header>

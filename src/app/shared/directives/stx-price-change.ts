@@ -6,12 +6,12 @@ import { Directive, effect, ElementRef, inject, input } from '@angular/core';
 })
 export class StxPriceChange {
   private el = inject(ElementRef);
-  readonly price = input<number>(33, { alias: 'stxPriceChange' });
+  readonly price = input<number | string>(33, { alias: 'stxPriceChange' });
   private previousPrice?: number;
 
   constructor() {
     effect(() => {
-      const currentPrice = this.price();
+      const currentPrice = +this.price();
       if (this.previousPrice !== undefined) {
         if (currentPrice > this.previousPrice) {
           this.el.nativeElement.style.color = '#00932f';
@@ -21,7 +21,7 @@ export class StxPriceChange {
         }
       }
 
-      this.previousPrice = this.price();
+      this.previousPrice = currentPrice;
     });
   }
 }
