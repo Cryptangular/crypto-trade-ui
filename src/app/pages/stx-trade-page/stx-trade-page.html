@@ -1,5 +1,5 @@
 <section class="stx-trade-page">
   <!-- TODO: Replace hardcoded input values with dynamic data from StxTradeApi service and connect live WebSocket stream -->
   <stx-trade-page-header tradePairName="BSD/USDT" [currentPrice]="price()" />
-  <stx-price-chart />
+  <stx-price-chart [klinesData]="klinesData()" (intervalChange)="tradePageService.updateInterval($event)" />
 </section>
