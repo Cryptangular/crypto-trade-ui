@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { StxTradePageHeader } from './stx-trade-page-header';
 
 describe('StxTradePageHeader', () => {
@@ -13,10 +12,13 @@ describe('StxTradePageHeader', () => {
 
     fixture = TestBed.createComponent(StxTradePageHeader);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.componentRef.setInput('tradePairName', 'BTCUSDT');
+
+    fixture.detectChanges();
+
     expect(component).toBeTruthy();
   });
 });
