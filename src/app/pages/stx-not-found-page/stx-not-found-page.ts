@@ -2,6 +2,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { StxButton } from '../../shared/ui/stx-button/stx-button';
 import { StxBtnConfig } from '../../shared/ui/stx-button/stx-button.types';
+import { APP_ROUTES } from '../../shared/constants/app-routes';
 
 @Component({
   selector: 'stx-not-found-page',
@@ -13,7 +14,7 @@ import { StxBtnConfig } from '../../shared/ui/stx-button/stx-button.types';
 export class StxNotFoundPage {
   protected readonly toHomePageBtnConfig: StxBtnConfig = {
     appearance: 'tonal',
-    label: 'Go to Homepage',
-    href: '/',
+    label: 'Go to Dashboard',
+    href: `/${APP_ROUTES.dashboard}`,
   };
 }

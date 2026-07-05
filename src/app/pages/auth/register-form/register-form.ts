@@ -16,6 +16,7 @@ import { AuthService } from '../services/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, EMPTY, finalize } from 'rxjs';
 import { MatCardModule } from '@angular/material/card';
+import { APP_ROUTES } from '../../../shared/constants/app-routes';
 
 @Component({
   selector: 'stx-register-form',
@@ -96,7 +97,7 @@ export class RegisterForm {
       )
       .subscribe({
         next: () => {
-          this.router.navigate(['/markets-page']);
+          this.router.navigate([APP_ROUTES.settings]);
         },
       });
   }
