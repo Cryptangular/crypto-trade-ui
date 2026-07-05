@@ -1,6 +1,10 @@
 <div class="markets-container">
   <div class="markets-header">
     <h2>Top Tokens by Market Capitalization</h2>
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Search pair...</mat-label>
+      <input matInput placeholder="e.g. BTCUSDT" [value]="searchQuery()" (input)="onSearchChange($event)" />
+    </mat-form-field>
   </div>
 
   <table

@@ -7,11 +7,13 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'stx-markets-page',
   standalone: true,
-  imports: [MatTableModule, MatPaginatorModule, MatSortModule],
+  imports: [MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule, MatInputModule],
   providers: [MarketsService],
   templateUrl: './markets-page.html',
   styleUrl: './markets-page.scss',
@@ -29,6 +31,8 @@ export class MarketsPage {
   readonly sortBy = signal<string | undefined>(undefined);
   readonly sortOrder = signal<'asc' | 'desc'>('asc');
 
+  readonly searchQuery = signal<string>('');
+
   readonly isLoading = signal<boolean>(false);
 
   readonly queryParams = computed(() => ({
@@ -37,6 +41,12 @@ export class MarketsPage {
     sortBy: this.sortBy(),
     sortOrder: this.sortOrder(),
   }));
+
+  protected onSearchChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+    this.pageIndex.set(0);
+  }
 
   private readonly marketData$ = toObservable(this.queryParams).pipe(
     tap(() => this.isLoading.set(true)),
