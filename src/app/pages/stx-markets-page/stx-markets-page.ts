@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { MarketsService } from './services/markets.service';
+import { StxMarketsService } from './services/stx-markets.service';
 import { Router } from '@angular/router';
 import { MarketToken } from './types/markets.types';
 import { MatTableModule } from '@angular/material/table';
@@ -14,13 +14,13 @@ import { MatInputModule } from '@angular/material/input';
   selector: 'stx-markets-page',
   standalone: true,
   imports: [MatTableModule, MatPaginatorModule, MatSortModule, MatFormFieldModule, MatInputModule],
-  providers: [MarketsService],
-  templateUrl: './markets-page.html',
-  styleUrl: './markets-page.scss',
+  providers: [StxMarketsService],
+  templateUrl: './stx-markets-page.html',
+  styleUrl: './stx-markets-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MarketsPage {
-  private readonly marketsService = inject(MarketsService);
+export class StxMarketsPage {
+  private readonly marketsService = inject(StxMarketsService);
   private readonly router = inject(Router);
 
   readonly displayedColumns: string[] = ['coin', 'price', 'change24h', 'volume'];

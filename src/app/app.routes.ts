@@ -10,7 +10,7 @@ export const routes: Routes = [
   },
   {
     path: 'markets',
-    loadComponent: () => import('./pages/markets-page/markets-page').then(m => m.MarketsPage),
+    loadComponent: () => import('./pages/stx-markets-page/stx-markets-page').then(m => m.StxMarketsPage),
     canActivate: [authGuard],
   },
   {

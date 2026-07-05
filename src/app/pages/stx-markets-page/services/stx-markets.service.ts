@@ -4,7 +4,7 @@ import { MarketQueryParams, MarketResponse } from '../types/markets.types';
 import { environment } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 
-export class MarketsService {
+export class StxMarketsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/tokens`;
 
