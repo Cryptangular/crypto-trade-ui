@@ -9,6 +9,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { ToastService } from '../../../core/services/toast/toast-service';
 
 @Component({
   selector: 'stx-markets-page',
@@ -22,17 +23,15 @@ import { MatInputModule } from '@angular/material/input';
 export class StxMarketsPage {
   private readonly marketsService = inject(StxMarketsService);
   private readonly router = inject(Router);
+  private readonly toastService = inject(ToastService);
 
   readonly displayedColumns: string[] = ['coin', 'price', 'change24h', 'volume'];
 
   readonly pageIndex = signal<number>(0);
   readonly pageSize = signal<number>(20);
-
   readonly sortBy = signal<string | undefined>(undefined);
   readonly sortOrder = signal<'asc' | 'desc'>('asc');
-
   readonly searchQuery = signal<string>('');
-
   readonly isLoading = signal<boolean>(false);
 
   readonly queryParams = computed(() => ({
@@ -48,13 +47,12 @@ export class StxMarketsPage {
     switchMap(params =>
       this.marketsService.getMarketData(params).pipe(
         catchError(err => {
-          console.error('Failed to load market data', err);
-
+          this.toastService.danger('Failed to load market data', err.message);
           return of({ data: [], total: 0 });
-        })
+        }),
+        finalize(() => this.isLoading.set(false))
       )
-    ),
-    finalize(() => this.isLoading.set(false))
+    )
   );
 
   readonly marketResponse = toSignal(this.marketData$);

@@ -50,7 +50,13 @@
       (click)="navigateToTrade(row.symbol)"></tr>
 
     <tr *matNoDataRow class="mat-row">
-      <td class="mat-cell loading" [attr.colspan]="displayedColumns.length">Loading market data...</td>
+      <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
+        @if (searchQuery()) {
+        <span class="no-results-text">No pairs found for "{{ searchQuery() }}"</span>
+        } @else {
+        <span class="no-data-text">No data available</span>
+        }
+      </td>
     </tr>
   </table>
 

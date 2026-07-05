@@ -76,9 +76,19 @@ table.crypto-table {
     font-weight: 500;
   }
 
-  td.loading {
+  .no-data-cell {
     text-align: center;
-    color: $text-muted;
-    padding: 40px;
+    background-color: transparent;
+    border-bottom: none;
+
+    .no-results-text,
+    .no-data-text {
+      display: block;
+      padding: 48px 24px;
+      color: #848e9c;
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 0.1px;
+    }
   }
 }
