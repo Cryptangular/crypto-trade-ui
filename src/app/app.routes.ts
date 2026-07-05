@@ -26,4 +26,9 @@ export const routes: Routes = [
     title: 'settings',
     loadComponent: () => import('./pages/stx-settings-page/stx-settings-page').then(m => m.StxSettingsPage),
   },
+  {
+    path: APP_ROUTES.notFound,
+    title: 'not-found',
+    loadComponent: () => import('./pages/stx-not-found/stx-not-found').then(m => m.StxNotFound),
+  },
 ];
