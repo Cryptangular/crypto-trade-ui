@@ -4,13 +4,13 @@ import { StxButton } from '../../shared/ui/stx-button/stx-button';
 import { StxBtnConfig } from '../../shared/ui/stx-button/stx-button.types';
 
 @Component({
-  selector: 'stx-not-found',
+  selector: 'stx-not-found-page',
   imports: [NgOptimizedImage, StxButton],
-  templateUrl: './stx-not-found.html',
-  styleUrl: './stx-not-found.scss',
+  templateUrl: './stx-not-found-page.html',
+  styleUrl: './stx-not-found-page.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StxNotFound {
+export class StxNotFoundPage {
   protected readonly toHomePageBtnConfig: StxBtnConfig = {
     appearance: 'tonal',
     label: 'Go to Homepage',

@@ -33,6 +33,6 @@ export const routes: Routes = [
   {
     path: APP_ROUTES.notFound,
     title: 'not-found',
-    loadComponent: () => import('./pages/stx-not-found/stx-not-found').then(m => m.StxNotFound),
+    loadComponent: () => import('./pages/stx-not-found-page/stx-not-found-page').then(m => m.StxNotFoundPage),
   },
 ];
