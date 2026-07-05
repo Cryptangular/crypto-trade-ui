@@ -6,7 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { catchError, of, switchMap, tap } from 'rxjs';
+import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'stx-markets-page',
@@ -49,7 +49,7 @@ export class MarketsPage {
         })
       )
     ),
-    tap(() => this.isLoading.set(false))
+    finalize(() => this.isLoading.set(false))
   );
 
   readonly marketResponse = toSignal(this.marketData$);
@@ -66,8 +66,7 @@ export class MarketsPage {
     if (!sortState.direction) {
       this.sortBy.set(undefined);
       this.sortOrder.set('asc');
-    }
-    {
+    } else {
       const backendField = sortState.active === 'coin' ? 'baseAsset' : sortState.active;
       this.sortBy.set(backendField);
       this.sortOrder.set(sortState.direction as 'asc' | 'desc');
