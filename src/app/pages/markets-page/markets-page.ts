@@ -40,13 +40,8 @@ export class MarketsPage {
     limit: this.pageSize(),
     sortBy: this.sortBy(),
     sortOrder: this.sortOrder(),
+    search: this.searchQuery().trim() || undefined,
   }));
-
-  protected onSearchChange(event: Event): void {
-    const value = (event.target as HTMLInputElement).value;
-    this.searchQuery.set(value);
-    this.pageIndex.set(0);
-  }
 
   private readonly marketData$ = toObservable(this.queryParams).pipe(
     tap(() => this.isLoading.set(true)),
@@ -66,6 +61,12 @@ export class MarketsPage {
 
   readonly tokens = computed(() => this.marketResponse()?.data ?? []);
   readonly totalTokens = computed(() => this.marketResponse()?.total ?? 0);
+
+  protected onSearchChange(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.searchQuery.set(value);
+    this.pageIndex.set(0);
+  }
 
   protected onPageChange(event: PageEvent): void {
     this.pageIndex.set(event.pageIndex);

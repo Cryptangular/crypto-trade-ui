@@ -20,4 +20,5 @@ export type MarketQueryParams = {
   limit: number;
   sortBy?: string;
   sortOrder?: string;
+  search?: string;
 };

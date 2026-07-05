@@ -15,6 +15,10 @@ export class MarketsService {
       httpParams = httpParams.set('sortBy', params.sortBy).set('sortOrder', params.sortOrder);
     }
 
+    if (params.search) {
+      httpParams = httpParams.set('search', params.search);
+    }
+
     return this.http.get<MarketResponse>(this.apiUrl, { params: httpParams });
   }
 }
