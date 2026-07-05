@@ -14,6 +14,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
+    path: 'trade',
+    loadComponent: () => import('./pages/stx-trade-page/stx-trade-page').then(m => m.StxTradePage),
+    canActivate: [authGuard],
+  },
+  {
     path: 'register',
     loadComponent: () => import('./pages/auth/register-form/register-form').then(m => m.RegisterForm),
   },
