@@ -37,11 +37,9 @@ export class StxSettingsService {
   getConnectionStatus(): Observable<SettingsResponse<null> | null> {
     return this.httpClient.get<SettingsResponse<null>>(`${this.url}/connection-status`, { withCredentials: true }).pipe(
       tap(({ code }) => {
-        if (code === SETTINGS_MESSAGES.CONNECTION_ON) {
-          this._isConnected.set(true);
-        } else {
-          this._isConnected.set(false);
-        }
+        const isConnected = code === SETTINGS_MESSAGES.CONNECTION_ON;
+
+        this._isConnected.set(isConnected);
       }),
       catchError(() => {
         this._isConnected.set(false);
