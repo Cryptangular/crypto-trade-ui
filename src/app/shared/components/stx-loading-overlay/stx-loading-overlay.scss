@@ -1,3 +1,7 @@
+:host([hidden]) {
+  display: none !important;
+}
+
 .loader-container {
   display: flex;
   flex-direction: column;
