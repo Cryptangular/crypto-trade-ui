@@ -3,7 +3,6 @@ import { LoadingOverlayService } from '../../../../core/services/stx-loading-ove
 
 @Component({
   selector: 'stx-loading-overlay',
-  imports: [],
   templateUrl: './stx-loading-overlay.html',
   styleUrl: './stx-loading-overlay.scss',
   host: {
