@@ -14,8 +14,7 @@
     </ul>
   </nav>
   @if(isOnline()) {
-  <!-- TODO: Replace with [status]="isApiConnected()" once backend support for 'hasBinanceKeys' is ready -->
-  <stx-connection-status [status]="isOnline()" />
+  <stx-connection-status [status]="isConnected()" />
   <stx-button [btnConfig]="settingBtnConfig" [isDisabled]="!isOnline()" (clicked)="toSettings()" />
   }
 </header>

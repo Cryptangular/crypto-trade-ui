@@ -8,6 +8,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { AuthService } from '../../../pages/auth/services/auth-service';
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from './constants/stx-navigation-constants';
 import { APP_ROUTES } from '../../constants/app-routes';
+import { StxSettingsService } from '../../../pages/stx-settings-page/services/stx-settings.service';
 
 @Component({
   selector: 'stx-header',
@@ -20,6 +21,9 @@ export class StxHeader {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   readonly isOnline = this.authService.isAuthenticated;
+
+  private readonly settingsService = inject(StxSettingsService);
+  readonly isConnected = this.settingsService.isConnected;
 
   readonly navRoutes = computed(() =>
     this.authService.isAuthenticated() ? [...PUBLIC_ROUTES, ...PRIVATE_ROUTES] : PUBLIC_ROUTES
