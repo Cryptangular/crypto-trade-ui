@@ -24,7 +24,6 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
 
       if (isLoaderShown && showStartTime) {
         const elapsed = Date.now() - showStartTime;
-
         const remainingTime = Math.max(0, MIN_SHOW_TIME - elapsed);
 
         if (remainingTime > 0) {
