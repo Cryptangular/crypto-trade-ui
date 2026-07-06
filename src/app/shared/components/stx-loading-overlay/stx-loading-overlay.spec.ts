@@ -13,7 +13,7 @@ describe('StxLoadingOverlay', () => {
 
     fixture = TestBed.createComponent(StxLoadingOverlay);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
