@@ -1,3 +1,5 @@
+import { APP_ROUTES } from '../../../constants/app-routes';
+
 export type NavigationItem = {
   label: string;
   route: string;
@@ -9,7 +11,7 @@ export const PRIVATE_ROUTES: NavigationItem[] = [
 ];
 
 export const PUBLIC_ROUTES: NavigationItem[] = [
-  { label: 'dashboard', route: '/dashboard' },
+  { label: 'dashboard', route: `/${APP_ROUTES.dashboard}` },
   { label: 'markets', route: '/markets' },
   { label: 'about us', route: '/about-us' },
 ];
