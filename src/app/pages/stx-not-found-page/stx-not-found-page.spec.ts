@@ -15,7 +15,7 @@ describe('StxNotFoundPage', () => {
 
     fixture = TestBed.createComponent(StxNotFoundPage);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    fixture.detectChanges();
   });
 
   it('should create', () => {
