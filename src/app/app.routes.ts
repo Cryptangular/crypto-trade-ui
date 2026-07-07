@@ -1,7 +1,8 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { APP_ROUTES } from './shared/constants/app-routes';
-import { settingsGuard } from './pages/stx-settings-page/guards/settings-guard';
+import { settingsGuard } from './pages/stx-settings-page/guards/settings.guard';
+import { guestGuard } from './pages/auth/guards/guest.guard';
 
 export const routes: Routes = [
   {
@@ -22,10 +23,12 @@ export const routes: Routes = [
   {
     path: 'register',
     loadComponent: () => import('./pages/auth/register-form/register-form').then(m => m.RegisterForm),
+    canActivate: [guestGuard],
   },
   {
     path: 'login',
     loadComponent: () => import('./pages/auth/login-form/login-form').then(m => m.LoginForm),
+    canActivate: [guestGuard],
   },
   {
     path: APP_ROUTES.portfolio,
