@@ -6,14 +6,9 @@ describe('StxPotfolioPage', () => {
   let component: StxPotfolioPage;
   let fixture: ComponentFixture<StxPotfolioPage>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [StxPotfolioPage],
-    }).compileComponents();
-
+  beforeEach(() => {
     fixture = TestBed.createComponent(StxPotfolioPage);
     component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {
