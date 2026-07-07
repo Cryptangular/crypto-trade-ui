@@ -13,9 +13,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/stx-markets-page/stx-markets-page').then(m => m.StxMarketsPage),
     canActivate: [authGuard],
   },
+
   {
     path: 'trade/:pair',
-    loadComponent: () => import('./pages/trade-page/trade-page').then(m => m.TradePage),
+    loadComponent: () => import('./pages/stx-trade-page/stx-trade-page').then(m => m.StxTradePage),
     canActivate: [authGuard],
   },
   {

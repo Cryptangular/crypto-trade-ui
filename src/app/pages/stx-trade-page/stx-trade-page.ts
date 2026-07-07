@@ -2,12 +2,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 @Component({
   selector: 'stx-trade-page',
-  standalone: true,
-  imports: [],
-  templateUrl: './trade-page.html',
-  styleUrl: './trade-page.scss',
+  templateUrl: './stx-trade-page.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TradePage {
+export class StxTradePage {
   readonly pair = input<string>('');
 }
