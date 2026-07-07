@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './pages/auth/guards/auth.guard';
 import { APP_ROUTES } from './shared/constants/app-routes';
+import { settingsGuard } from './pages/stx-settings-page/guards/settings-guard';
 
 export const routes: Routes = [
   {
@@ -16,7 +17,7 @@ export const routes: Routes = [
   {
     path: 'trade',
     loadComponent: () => import('./pages/stx-trade-page/stx-trade-page').then(m => m.StxTradePage),
-    canActivate: [authGuard],
+    canActivate: [authGuard, settingsGuard],
   },
   {
     path: 'register',
@@ -25,6 +26,12 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./pages/auth/login-form/login-form').then(m => m.LoginForm),
+  },
+  {
+    path: APP_ROUTES.portfolio,
+    title: 'portfolio',
+    loadComponent: () => import('./pages/stx-potfolio-page/stx-potfolio-page').then(m => m.StxPotfolioPage),
+    canActivate: [authGuard, settingsGuard],
   },
   {
     path: APP_ROUTES.settings,
