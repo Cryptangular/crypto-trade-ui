@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { StxPriceChart } from './components/stx-price-chart/stx-price-chart';
 import { StxTradeApiService } from './services/stx-trade-api-service';
 
@@ -11,5 +11,5 @@ import { StxTradeApiService } from './services/stx-trade-api-service';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StxTradePage {
- readonly pair = input<string>('');
+  readonly pair = input<string>('');
 }
