@@ -13,8 +13,9 @@
       }
     </ul>
   </nav>
-  @if(isOnline()) {
+  @if(isAuthenticated()) {
   <stx-connection-status [status]="isConnected()" />
-  <stx-button [btnConfig]="settingBtnConfig" [isDisabled]="!isOnline()" (clicked)="toSettings()" />
+  <stx-button [btnConfig]="settingBtnConfig" [isDisabled]="isLoading()" (clicked)="toSettings()" />
+  <stx-button [btnConfig]="logoutBtnConfig" [isDisabled]="isLoading()" (clicked)="logout()" />
   }
 </header>
