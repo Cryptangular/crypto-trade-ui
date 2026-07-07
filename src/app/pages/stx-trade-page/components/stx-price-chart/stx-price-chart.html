@@ -1,0 +1,17 @@
+<div class="price-chart">
+  <mat-button-toggle-group
+    aria-label="interval"
+    class="price-chart__toggle-bar"
+    name="interval"
+    [hideSingleSelectionIndicator]="true"
+    [value]="interval()"
+    (change)="onToggleChange($event)">
+    <mat-button-toggle value="1m">1 min</mat-button-toggle>
+    <mat-button-toggle value="5m">5 min</mat-button-toggle>
+    <mat-button-toggle value="15m">15 min</mat-button-toggle>
+    <mat-button-toggle value="1h">1 hour</mat-button-toggle>
+    <mat-button-toggle value="1d">1 day</mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <div #chartContainer class="price-chart__container"></div>
+</div>

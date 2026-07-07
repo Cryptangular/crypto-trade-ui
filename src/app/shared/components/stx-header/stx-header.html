@@ -1,5 +1,5 @@
 <header class="stx-header">
-  <a class="stx-logo" routerLink="/dashboard">
+  <a class="stx-logo" routerLink="/">
     <img alt="stonks" class="stx-logo__image" height="25" ngSrc="./assets/images/logo.svg" width="25" />
     <span class="stx-logo__title">stonks</span>
   </a>
@@ -13,7 +13,8 @@
       }
     </ul>
   </nav>
-  <!-- TODO: Replace with [status]="isApiConnected()" once backend support for 'hasBinanceKeys' is ready -->
-  <stx-connection-status [status]="isOnline()" />
-  <stx-button [btnConfig]="settingBtnConfig" />
+  @if(isOnline()) {
+  <stx-connection-status [status]="isConnected()" />
+  <stx-button [btnConfig]="settingBtnConfig" [isDisabled]="!isOnline()" (clicked)="toSettings()" />
+  }
 </header>

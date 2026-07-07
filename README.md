@@ -5,6 +5,10 @@ Crypto Trade is a trading platform clone where the user can browse market data, 
 
 The platform runs on top of Binance Spot Testnet — a fully functional Binance test environment that provides virtual funds upon registration. All data is virtual — no real money is involved.
 
+### Video Proof
+
+- [Demonstration of 404, Loading, and Error states](https://youtu.be/HoBU2AN7WiU)
+
 ## Team
 
 | Name              | Role                         | Github                                          | Development notes                         |

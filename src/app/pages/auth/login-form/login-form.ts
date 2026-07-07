@@ -10,6 +10,7 @@ import { EMAIL_VALIDATION_MESSAGES, PASSWORD_VALIDATION_MESSAGES } from '../cons
 import { ToastService } from '../../../../core/services/toast/toast-service';
 import { AuthService } from '../services/auth-service';
 import { MatCardModule } from '@angular/material/card';
+import { APP_ROUTES } from '../../../shared/constants/app-routes';
 
 @Component({
   selector: 'stx-login-form',
@@ -67,7 +68,7 @@ export class LoginForm {
         })
       )
       .subscribe({
-        next: () => this.router.navigate(['/markets']),
+        next: () => this.router.navigate([APP_ROUTES.dashboard]),
       });
   }
 

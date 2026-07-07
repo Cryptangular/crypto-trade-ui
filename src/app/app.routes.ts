@@ -4,9 +4,9 @@ import { APP_ROUTES } from './shared/constants/app-routes';
 
 export const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'register',
-    pathMatch: 'full',
+    path: APP_ROUTES.dashboard,
+    title: 'dashboard',
+    loadComponent: () => import('./pages/stx-dashboard-page/stx-dashboard-page').then(m => m.StxDashboardPage),
   },
   {
     path: 'markets',
@@ -16,6 +16,11 @@ export const routes: Routes = [
 
   {
     path: 'trade/:pair',
+    loadComponent: () => import('./pages/stx-trade-page/stx-trade-page').then(m => m.StxTradePage),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'trade',
     loadComponent: () => import('./pages/stx-trade-page/stx-trade-page').then(m => m.StxTradePage),
     canActivate: [authGuard],
   },
@@ -31,5 +36,11 @@ export const routes: Routes = [
     path: APP_ROUTES.settings,
     title: 'settings',
     loadComponent: () => import('./pages/stx-settings-page/stx-settings-page').then(m => m.StxSettingsPage),
+    canActivate: [authGuard],
+  },
+  {
+    path: APP_ROUTES.notFound,
+    title: 'not-found',
+    loadComponent: () => import('./pages/stx-not-found-page/stx-not-found-page').then(m => m.StxNotFoundPage),
   },
 ];

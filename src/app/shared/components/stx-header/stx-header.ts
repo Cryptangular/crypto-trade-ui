@@ -1,12 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, Signal } from '@angular/core';
 import { StxButton } from '../../ui/stx-button/stx-button';
 import { StxBtnConfig } from '../../ui/stx-button/stx-button.types';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { StxSearchBar } from '../stx-search-bar/stx-search-bar';
 import { StxConnectionStatus } from '../stx-connection-status/stx-connection-status';
 import { NgOptimizedImage } from '@angular/common';
 import { AuthService } from '../../../pages/auth/services/auth-service';
 import { PRIVATE_ROUTES, PUBLIC_ROUTES } from './constants/stx-navigation-constants';
+import { APP_ROUTES } from '../../constants/app-routes';
+import { StxSettingsService } from '../../../pages/stx-settings-page/services/stx-settings.service';
 
 @Component({
   selector: 'stx-header',
@@ -16,8 +18,12 @@ import { PRIVATE_ROUTES, PUBLIC_ROUTES } from './constants/stx-navigation-consta
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StxHeader {
+  private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
   readonly isOnline = this.authService.isAuthenticated;
+
+  private readonly settingsService = inject(StxSettingsService);
+  readonly isConnected = this.settingsService.isConnected;
 
   readonly navRoutes = computed(() =>
     this.authService.isAuthenticated() ? [...PUBLIC_ROUTES, ...PRIVATE_ROUTES] : PUBLIC_ROUTES
@@ -31,6 +37,10 @@ export class StxHeader {
     appearance: 'icon',
     icon: 'settings',
   };
+
+  protected toSettings(): void {
+    this.router.navigate([APP_ROUTES.settings]);
+  }
 
   onChange(query: string): void {
     console.log(query);
