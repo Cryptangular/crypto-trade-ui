@@ -52,7 +52,7 @@ export class AuthService {
   }
 
   signOut(): Observable<{ message: string }> {
-    return this.http.post<{ message: string }>(`${this.apiUrl}/signout`, {}, { withCredentials: true }).pipe(
+    return this.http.post<{ message: string }>(`${this.apiUrl}/logout`, {}, { withCredentials: true }).pipe(
       tap(() => this._currentUser.set(null)),
       catchError(error => this.handleError(error))
     );
