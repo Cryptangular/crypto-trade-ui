@@ -1,8 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { Observable, of, Subject } from 'rxjs';
 import { StxTradePageService } from './stx-trade-page-service';
 import { WebSocketService } from './stx-trade-ws.service';
 import { StxTradeApiService } from './stx-trade-api-service';
-import { Observable, of, Subject } from 'rxjs';
 
 describe('StxTradePageService', () => {
   let service: StxTradePageService;
@@ -11,10 +12,11 @@ describe('StxTradePageService', () => {
     TestBed.configureTestingModule({
       providers: [
         StxTradePageService,
+        provideRouter([]),
         {
           provide: WebSocketService,
           useValue: {
-            messages$: new Subject(),
+            messages$: new Subject<unknown>(),
             connect: (): void => {},
             disconnect: (): void => {},
             subscribeToStreams: (): void => {},
