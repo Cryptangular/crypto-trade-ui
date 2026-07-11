@@ -2,14 +2,7 @@ import { Injectable } from '@angular/core';
 import { NEVER, Subject, timer } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { catchError, retry, tap } from 'rxjs/operators';
-
-export type WebSocketMessage = {
-  e: string;
-  E: number;
-  s: string;
-  // eslint-disable-next-line
-  [key: string]: any;
-};
+import { WebSocketMessage } from '../models/stx-trade-model';
 
 @Injectable({
   providedIn: 'root',
@@ -58,7 +51,6 @@ export class WebSocketService {
           next: message => {
             this.messagesSubject$.next(message);
           },
-          error: error => console.error('WebSocket subscription error:', error),
         });
     }
   }

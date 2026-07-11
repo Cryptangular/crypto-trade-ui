@@ -1,9 +1,16 @@
 import { computed, inject, Injectable, signal, untracked, WritableSignal } from '@angular/core';
-import { WebSocketMessage, WebSocketService } from './stx-trade-ws.service';
+import { WebSocketService } from './stx-trade-ws.service';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { StxTradeApiService } from './stx-trade-api-service';
-import { CandlestickData, PriceChange } from '../models/stx-trade-model';
-import { Time } from 'lightweight-charts';
+import {
+  CandlestickData,
+  isKline,
+  isTicker,
+  parseKline,
+  parseTicker,
+  PriceChange,
+  WebSocketMessage,
+} from '../models/stx-trade-model';
 import { combineLatest, map, switchMap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 
@@ -50,33 +57,14 @@ export class StxTradePageService {
 
     const ws = this.wsService;
 
-    ws.messages$.pipe(takeUntilDestroyed()).subscribe({
-      next: (m: WebSocketMessage) => {
-        if (m.e === 'kline') {
-          const formattedKline = {
-            time: m['k']['t'] as Time,
-            open: Number(m['k']['o']),
-            high: Number(m['k']['h']),
-            low: Number(m['k']['l']),
-            close: Number(m['k']['c']),
-          };
-
-          this._klineData.set(formattedKline);
-
-          this.updateKlinesArray(formattedKline);
-        } else if (m.e === '24hrTicker') {
-          const priceChange = {
-            lastPrice: m['c'],
-            priceChange: m['p'],
-            percent: m['P'],
-            highPrice: m['h'],
-            lowPrice: m['l'],
-            volume: m['v'],
-            turnover: m['q'],
-          };
-          this._priceChange.set(priceChange);
-        }
-      },
+    ws.messages$.pipe(takeUntilDestroyed()).subscribe((message: WebSocketMessage) => {
+      if (isKline(message)) {
+        const formattedKline = parseKline(message);
+        this._klineData.set(formattedKline);
+        this.updateKlinesArray(formattedKline);
+      } else if (isTicker(message)) {
+        this._priceChange.set(parseTicker(message));
+      }
     });
   }
 
