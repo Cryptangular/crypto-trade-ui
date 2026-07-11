@@ -1,7 +1,6 @@
 @let state = tradePageService.pageState();
 
 <section class="stx-trade-page">
-  <!-- TODO: Replace hardcoded input values with dynamic data from StxTradeApi service and connect live WebSocket stream -->
   <stx-trade-page-header [tradePairName]="pair() | cryptoPairPipe " [priceChange]="state.priceChange" />
   <stx-price-chart [klinesData]="state.klines" (intervalChange)="tradePageService.updateInterval($event)" />
 </section>
