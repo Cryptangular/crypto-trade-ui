@@ -2,6 +2,6 @@
 
 <section class="stx-trade-page">
   <!-- TODO: Replace hardcoded input values with dynamic data from StxTradeApi service and connect live WebSocket stream -->
-  <stx-trade-page-header [tradePairName]="pair()" [priceChange]="state.priceChange" />
+  <stx-trade-page-header [tradePairName]="pair() | uppercase" [priceChange]="state.priceChange" />
   <stx-price-chart [klinesData]="state.klines" (intervalChange)="tradePageService.updateInterval($event)" />
 </section>

@@ -1,15 +1,19 @@
 import { computed, inject, Injectable, signal, untracked, WritableSignal } from '@angular/core';
 import { WebSocketMessage, WebSocketService } from './stx-trade-ws.service';
-import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { StxTradeApiService } from './stx-trade-api-service';
 import { CandlestickData, PriceChange } from '../models/stx-trade-model';
 import { Time } from 'lightweight-charts';
-import { combineLatest, switchMap } from 'rxjs';
+import { combineLatest, map, switchMap } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
 
 @Injectable()
 export class StxTradePageService {
   private wsService = inject(WebSocketService);
   private tradeApiService = inject(StxTradeApiService);
+  private route = inject(ActivatedRoute);
+
+  private readonly routePair = toSignal(this.route.paramMap.pipe(map(params => params.get('pair'))));
 
   private readonly _klineData: WritableSignal<CandlestickData | undefined> = signal(undefined);
   private readonly _priceChange = signal<PriceChange | null>(null);
@@ -24,15 +28,18 @@ export class StxTradePageService {
     klines: untracked(() => this._klinesDataArray()),
   }));
 
-  readonly symbol = signal('btcusdt');
-
   start(): void {
     this.wsService.connect('wss://stream.binance.com:9443/ws');
-    this.wsService.subscribeToStreams([`${this.symbol()}@kline_${this.interval()}`, `${this.symbol()}@ticker`]);
+    this.wsService.subscribeToStreams([`${this.pair()}@kline_${this.interval()}`, `${this.pair()}@ticker`]);
   }
 
+  readonly pair = computed(() => {
+    const pair = this.routePair() || 'btcusdt';
+    return pair.toLowerCase();
+  });
+
   constructor() {
-    combineLatest([toObservable(this.symbol), toObservable(this.interval)])
+    combineLatest([toObservable(this.pair), toObservable(this.interval)])
       .pipe(
         switchMap(([symbol, interval]) => this.tradeApiService.getHistoricalKlines(symbol, interval)),
         takeUntilDestroyed()
@@ -74,9 +81,9 @@ export class StxTradePageService {
   }
 
   updateInterval(interval: string): void {
+    this.wsService.unsubscribeFromStreams([`${this.pair()}@kline_${this.interval()}`]);
     this._interval.set(interval);
-    this.wsService.unsubscribeFromStreams([`btcusdt@kline_${this.interval()}`]);
-    this.wsService.subscribeToStreams([`btcusdt@kline_${this.interval()}`]);
+    this.wsService.subscribeToStreams([`${this.pair()}@kline_${this.interval()}`]);
   }
 
   updateKlinesArray(newKline: CandlestickData): void {

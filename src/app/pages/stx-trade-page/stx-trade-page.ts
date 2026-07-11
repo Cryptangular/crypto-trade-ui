@@ -1,19 +1,10 @@
-import { WebSocketMessage, WebSocketService } from './services/stx-trade-ws.service';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  OnDestroy,
-  OnInit,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { StxPriceChart } from './components/stx-price-chart/stx-price-chart';
 import { StxTradeApiService } from './services/stx-trade-api-service';
 import { StxTradePageHeader } from './components/stx-trade-page-header/stx-trade-page-header';
 import { CandlestickData } from './models/stx-trade-model';
 import { StxTradePageService } from './services/stx-trade-page-service';
+import { UpperCasePipe } from '@angular/common';
 
 export type KlineData = {
   type: string;
@@ -24,7 +15,7 @@ export type KlineData = {
 
 @Component({
   selector: 'stx-trade-page',
-  imports: [StxPriceChart, StxTradePageHeader],
+  imports: [StxPriceChart, StxTradePageHeader, UpperCasePipe],
   providers: [StxTradeApiService, StxTradePageService],
   templateUrl: './stx-trade-page.html',
   styleUrl: './stx-trade-page.scss',
@@ -34,11 +25,8 @@ export class StxTradePage implements OnInit, OnDestroy {
   tradePageService = inject(StxTradePageService);
 
   readonly kline = this.tradePageService.klineData;
-  readonly price = this.tradePageService.priceChange;
-  readonly pair = input<string>('');
+  readonly pair = this.tradePageService.pair;
   readonly pageState = this.tradePageService.pageState();
-
-  readonly klinesData = this.tradePageService.klinesDataArray;
 
   ngOnInit(): void {
     this.tradePageService.start();
