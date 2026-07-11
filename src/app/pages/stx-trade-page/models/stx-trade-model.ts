@@ -58,6 +58,16 @@ export type BinanceTicker = {
 
 export type WebSocketMessage = BinanceKline | BinanceTicker;
 
+export type BinanceCommand = {
+  method: 'SUBSCRIBE' | 'UNSUBSCRIBE';
+  params: string[];
+  id: number;
+};
+
+export function isStreamMessage(message: WebSocketMessage | BinanceCommand): message is WebSocketMessage {
+  return message && 'e' in message;
+}
+
 export function isKline(event: BinanceStream): event is BinanceKline {
   return event.e === 'kline';
 }

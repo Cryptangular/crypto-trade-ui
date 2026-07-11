@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { NEVER, Subject, timer } from 'rxjs';
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { catchError, retry, tap } from 'rxjs/operators';
-import { WebSocketMessage } from '../models/stx-trade-model';
+import { BinanceCommand, isStreamMessage, WebSocketMessage } from '../models/stx-trade-model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService {
-  private socket$: WebSocketSubject<WebSocketMessage> | null = null;
+  private socket$: WebSocketSubject<WebSocketMessage | BinanceCommand> | null = null;
   private messagesSubject$ = new Subject<WebSocketMessage>();
   private reconnectionDelay = 3000;
   private maxReconnectionAttempts = 5;
@@ -47,15 +47,15 @@ export class WebSocketService {
             return NEVER;
           })
         )
-        .subscribe({
-          next: message => {
+        .subscribe(message => {
+          if (isStreamMessage(message)) {
             this.messagesSubject$.next(message);
-          },
+          }
         });
     }
   }
 
-  private createWebSocket(url: string): WebSocketSubject<WebSocketMessage> {
+  private createWebSocket(url: string): WebSocketSubject<WebSocketMessage | BinanceCommand> {
     return webSocket({
       url: url,
       openObserver: {
@@ -80,10 +80,10 @@ export class WebSocketService {
         params: streams,
         id: Date.now(),
       };
-      // eslint-disable-next-line
-      this.socket$.next(command as any);
+
+      this.socket$.next(command);
     } else {
-      console.warn('WebSocket не подключен. Невозможно отправить команду:', method);
+      console.warn('WebSocket is not connected. Cannot send command:', method);
     }
   }
 
