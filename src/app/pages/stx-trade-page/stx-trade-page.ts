@@ -4,7 +4,7 @@ import { StxTradeApiService } from './services/stx-trade-api-service';
 import { StxTradePageHeader } from './components/stx-trade-page-header/stx-trade-page-header';
 import { CandlestickData } from './models/stx-trade-model';
 import { StxTradePageService } from './services/stx-trade-page-service';
-import { UpperCasePipe } from '@angular/common';
+import { CryptoPairPipe } from '../../shared/pipes/crypto-pair-pipe';
 
 export type KlineData = {
   type: string;
@@ -15,7 +15,7 @@ export type KlineData = {
 
 @Component({
   selector: 'stx-trade-page',
-  imports: [StxPriceChart, StxTradePageHeader, UpperCasePipe],
+  imports: [StxPriceChart, StxTradePageHeader, CryptoPairPipe],
   providers: [StxTradeApiService, StxTradePageService],
   templateUrl: './stx-trade-page.html',
   styleUrl: './stx-trade-page.scss',
