@@ -7,6 +7,7 @@ import { combineLatest, filter, map, switchMap, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../environments/environment';
 import { Time } from 'lightweight-charts';
+import { DEFAULT_KLINES_LIMIT, MS_IN_SECOND } from '../constants/stx-trade-page-constants';
 
 @Injectable()
 export class StxTradePageService {
@@ -47,7 +48,7 @@ export class StxTradePageService {
 
     this.wsService.tradeStream$.pipe(takeUntilDestroyed()).subscribe((message: BinanceStream) => {
       if (isKline(message)) {
-        const formattedKlineData = { ...message.data, time: (message.data.time / 1000) as Time };
+        const formattedKlineData = { ...message.data, time: (message.data.time / MS_IN_SECOND) as Time };
         this._klineData.set(formattedKlineData);
         this.updateKlinesArray(formattedKlineData);
       } else if (isTicker(message)) {
@@ -96,7 +97,7 @@ export class StxTradePageService {
         return oldArray;
       }
 
-      return [...oldArray, newKline].slice(-500);
+      return [...oldArray, newKline].slice(-DEFAULT_KLINES_LIMIT);
     });
   }
 
