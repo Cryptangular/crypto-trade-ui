@@ -11,7 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { CandlestickSeries, createChart, IChartApi, ISeriesApi } from 'lightweight-charts';
-import { CandlestickData } from '../../models/stx-trade-model';
+import { KlineData } from '../../models/stx-trade-model';
 import { MatButtonToggleChange, MatButtonToggleModule } from '@angular/material/button-toggle';
 import { PRICE_CHART_CONFIG } from './stx-price-chart-config-token';
 
@@ -31,10 +31,9 @@ export class StxPriceChart {
   private readonly destroyRef = inject(DestroyRef);
   private readonly chartConfig = inject(PRICE_CHART_CONFIG);
 
-  readonly symbol = input<string>('BNBUSDT');
   readonly intervalChange = output<string>();
 
-  readonly klinesData = input<CandlestickData[]>([]);
+  readonly klinesData = input<KlineData[]>([]);
 
   private chart?: IChartApi;
   private candlestickSeries?: ISeriesApi<'Candlestick'>;

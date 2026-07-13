@@ -2,18 +2,11 @@ import { computed, inject, Injectable, signal, untracked, WritableSignal } from 
 import { WebSocketService } from './stx-trade-ws.service';
 import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { StxTradeApiService } from './stx-trade-api-service';
-import {
-  CandlestickData,
-  isKline,
-  isTicker,
-  parseKline,
-  parseTicker,
-  PriceChange,
-  WebSocketMessage,
-} from '../models/stx-trade-model';
+import { BinanceStream, isKline, isTicker, KlineData, PriceData } from '../models/stx-trade-model';
 import { combineLatest, filter, map, switchMap, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { environment } from '../../../../environments/environment';
+import { Time } from 'lightweight-charts';
 
 @Injectable()
 export class StxTradePageService {
@@ -24,10 +17,10 @@ export class StxTradePageService {
 
   private readonly routePair = toSignal(this.route.paramMap.pipe(map(params => params.get('pair'))));
 
-  private readonly _klineData: WritableSignal<CandlestickData | undefined> = signal(undefined);
-  private readonly _priceChange = signal<PriceChange | null>(null);
+  private readonly _klineData: WritableSignal<KlineData | undefined> = signal(undefined);
+  private readonly _priceChange = signal<PriceData | null>(null);
   private readonly _interval = signal('1m');
-  private readonly _klinesDataArray = signal<CandlestickData[]>([]);
+  private readonly _klinesDataArray = signal<KlineData[]>([]);
 
   readonly klineData = this._klineData.asReadonly();
   readonly interval = this._interval.asReadonly();
@@ -52,14 +45,13 @@ export class StxTradePageService {
         this._klinesDataArray.set(historicalKlines);
       });
 
-    this.wsService.tradeStream$.pipe(takeUntilDestroyed()).subscribe((message: WebSocketMessage) => {
-      console.log(message);
+    this.wsService.tradeStream$.pipe(takeUntilDestroyed()).subscribe((message: BinanceStream) => {
       if (isKline(message)) {
-        const formattedKline = parseKline(message);
-        this._klineData.set(formattedKline);
-        this.updateKlinesArray(formattedKline);
+        const formattedKlineData = { ...message.data, time: (message.data.time / 1000) as Time };
+        this._klineData.set(formattedKlineData);
+        this.updateKlinesArray(formattedKlineData);
       } else if (isTicker(message)) {
-        this._priceChange.set(parseTicker(message));
+        this._priceChange.set(message.data);
       }
     });
   }
@@ -86,7 +78,7 @@ export class StxTradePageService {
     this.wsService.subscribeToStream(`${this.pair()}@kline_${this.interval()}`);
   }
 
-  updateKlinesArray(newKline: CandlestickData): void {
+  updateKlinesArray(newKline: KlineData): void {
     if (!newKline) return;
 
     this._klinesDataArray.update(oldArray => {

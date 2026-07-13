@@ -1,7 +1,7 @@
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { StxPriceChange } from '../../../../shared/directives/stx-price-change';
-import { PriceChange } from '../../models/stx-trade-model';
+import { PriceData } from '../../models/stx-trade-model';
 
 @Component({
   selector: 'stx-trade-page-header',
@@ -12,5 +12,5 @@ import { PriceChange } from '../../models/stx-trade-model';
 })
 export class StxTradePageHeader {
   readonly tradePairName = input.required<string>();
-  readonly priceChange = input<PriceChange | null>();
+  readonly priceChange = input<PriceData | null>();
 }

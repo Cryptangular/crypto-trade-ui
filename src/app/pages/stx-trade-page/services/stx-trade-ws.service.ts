@@ -1,14 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
-import { WebSocketMessage } from '../models/stx-trade-model';
+import { BinanceStream } from '../models/stx-trade-model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WebSocketService implements OnDestroy {
   private socket: Socket | null = null;
-  private tradeStreamSubject$ = new Subject<WebSocketMessage>();
+  private tradeStreamSubject$ = new Subject<BinanceStream>();
 
   tradeStream$ = this.tradeStreamSubject$.asObservable();
   connectionStatus$ = new Subject<boolean>();
@@ -34,7 +34,7 @@ export class WebSocketService implements OnDestroy {
       });
     });
 
-    this.socket.on('tradeStreamUpdate', (data: WebSocketMessage) => {
+    this.socket.on('tradeStreamUpdate', (data: BinanceStream) => {
       this.tradeStreamSubject$.next(data);
     });
 

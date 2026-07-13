@@ -2,16 +2,8 @@ import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@
 import { StxPriceChart } from './components/stx-price-chart/stx-price-chart';
 import { StxTradeApiService } from './services/stx-trade-api-service';
 import { StxTradePageHeader } from './components/stx-trade-page-header/stx-trade-page-header';
-import { CandlestickData } from './models/stx-trade-model';
 import { StxTradePageService } from './services/stx-trade-page-service';
 import { CryptoPairPipe } from '../../shared/pipes/crypto-pair-pipe';
-
-export type KlineData = {
-  type: string;
-  time: number;
-  symbol: string;
-  kline: CandlestickData;
-};
 
 @Component({
   selector: 'stx-trade-page',
