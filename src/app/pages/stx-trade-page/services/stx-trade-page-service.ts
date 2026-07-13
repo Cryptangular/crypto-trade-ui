@@ -11,14 +11,16 @@ import {
   PriceChange,
   WebSocketMessage,
 } from '../models/stx-trade-model';
-import { combineLatest, map, switchMap } from 'rxjs';
+import { combineLatest, filter, map, switchMap, take } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Injectable()
 export class StxTradePageService {
   private wsService = inject(WebSocketService);
   private tradeApiService = inject(StxTradeApiService);
   private route = inject(ActivatedRoute);
+  private readonly baseUrl = environment.apiUrl;
 
   private readonly routePair = toSignal(this.route.paramMap.pipe(map(params => params.get('pair'))));
 
@@ -35,11 +37,6 @@ export class StxTradePageService {
     klines: untracked(() => this._klinesDataArray()),
   }));
 
-  start(): void {
-    this.wsService.connect('wss://stream.binance.com:9443/ws');
-    this.wsService.subscribeToStreams([`${this.pair()}@kline_${this.interval()}`, `${this.pair()}@ticker`]);
-  }
-
   readonly pair = computed(() => {
     const pair = this.routePair() || 'btcusdt';
     return pair.toLowerCase();
@@ -55,9 +52,8 @@ export class StxTradePageService {
         this._klinesDataArray.set(historicalKlines);
       });
 
-    const ws = this.wsService;
-
-    ws.messages$.pipe(takeUntilDestroyed()).subscribe((message: WebSocketMessage) => {
+    this.wsService.tradeStream$.pipe(takeUntilDestroyed()).subscribe((message: WebSocketMessage) => {
+      console.log(message);
       if (isKline(message)) {
         const formattedKline = parseKline(message);
         this._klineData.set(formattedKline);
@@ -68,10 +64,26 @@ export class StxTradePageService {
     });
   }
 
+  start(): void {
+    this.wsService.connect(this.baseUrl);
+
+    this.wsService.connectionStatus$
+      .pipe(
+        filter(status => status === true),
+        take(1)
+      )
+      .subscribe(() => {
+        this.wsService.subscribeToStream(`${this.pair()}@kline_${this.interval()}`);
+        this.wsService.subscribeToStream(`${this.pair()}@ticker`);
+      });
+  }
+
   updateInterval(interval: string): void {
-    this.wsService.unsubscribeFromStreams([`${this.pair()}@kline_${this.interval()}`]);
+    this.wsService.unsubscribeFromStream(`${this.pair()}@kline_${this.interval()}`);
+
     this._interval.set(interval);
-    this.wsService.subscribeToStreams([`${this.pair()}@kline_${this.interval()}`]);
+
+    this.wsService.subscribeToStream(`${this.pair()}@kline_${this.interval()}`);
   }
 
   updateKlinesArray(newKline: CandlestickData): void {

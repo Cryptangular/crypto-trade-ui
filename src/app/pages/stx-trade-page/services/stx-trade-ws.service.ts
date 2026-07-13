@@ -1,105 +1,76 @@
-import { Injectable } from '@angular/core';
-import { NEVER, Subject, timer } from 'rxjs';
-import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
-import { catchError, retry, tap } from 'rxjs/operators';
-import { BinanceCommand, isStreamMessage, WebSocketMessage } from '../models/stx-trade-model';
+import { Injectable, OnDestroy } from '@angular/core';
+import { Subject } from 'rxjs';
+import { io, Socket } from 'socket.io-client';
+import { WebSocketMessage } from '../models/stx-trade-model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WebSocketService {
-  private socket$: WebSocketSubject<WebSocketMessage | BinanceCommand> | null = null;
-  private messagesSubject$ = new Subject<WebSocketMessage>();
-  private reconnectionDelay = 3000;
-  private maxReconnectionAttempts = 5;
-  private reconnectionAttempts = 0;
+export class WebSocketService implements OnDestroy {
+  private socket: Socket | null = null;
+  private tradeStreamSubject$ = new Subject<WebSocketMessage>();
 
-  messages$ = this.messagesSubject$.asObservable();
+  tradeStream$ = this.tradeStreamSubject$.asObservable();
   connectionStatus$ = new Subject<boolean>();
 
+  private activeStreams = new Set<string>();
+
   connect(url: string): void {
-    if (!this.socket$ || this.socket$.closed) {
-      this.socket$ = this.createWebSocket(url);
+    if (this.socket && this.socket.connected) return;
 
-      this.socket$
-        .pipe(
-          tap(() => {
-            this.reconnectionAttempts = 0;
-            this.connectionStatus$.next(true);
-          }),
-          retry({
-            delay: error => {
-              console.error('WebSocket error:', error);
-              this.connectionStatus$.next(false);
-
-              this.reconnectionAttempts++;
-              if (this.reconnectionAttempts >= this.maxReconnectionAttempts) {
-                console.error('Max reconnection attempts reached');
-                throw error;
-              }
-
-              console.log(`Reconnecting in ${this.reconnectionDelay}ms...`);
-              return timer(this.reconnectionDelay);
-            },
-          }),
-          catchError(error => {
-            console.error('Unrecoverable WebSocket error:', error);
-            return NEVER;
-          })
-        )
-        .subscribe(message => {
-          if (isStreamMessage(message)) {
-            this.messagesSubject$.next(message);
-          }
-        });
-    }
-  }
-
-  private createWebSocket(url: string): WebSocketSubject<WebSocketMessage | BinanceCommand> {
-    return webSocket({
-      url: url,
-      openObserver: {
-        next: () => {
-          console.log('WebSocket connection opened');
-          this.connectionStatus$.next(true);
-        },
-      },
-      closeObserver: {
-        next: () => {
-          console.log('WebSocket connection closed');
-          this.connectionStatus$.next(false);
-        },
-      },
+    this.socket = io(url, {
+      transports: ['websocket'],
+      autoConnect: true,
+      reconnection: true,
+      reconnectionDelay: 3000,
     });
+
+    this.socket.on('connect', () => {
+      console.log('Connected to Trade WebSocket Gateway');
+      this.connectionStatus$.next(true);
+
+      this.activeStreams.forEach(stream => {
+        this.socket?.emit('subscribeToStream', stream);
+      });
+    });
+
+    this.socket.on('tradeStreamUpdate', (data: WebSocketMessage) => {
+      this.tradeStreamSubject$.next(data);
+    });
+
+    this.socket.on('disconnect', () => this.connectionStatus$.next(false));
   }
 
-  private sendCommand(method: 'SUBSCRIBE' | 'UNSUBSCRIBE', streams: string[]): void {
-    if (this.socket$ && !this.socket$.closed) {
-      const command = {
-        method: method,
-        params: streams,
-        id: Date.now(),
-      };
+  subscribeToStream(streamName: string): void {
+    const stream = streamName.toLowerCase();
+    this.activeStreams.add(stream);
 
-      this.socket$.next(command);
-    } else {
-      console.warn('WebSocket is not connected. Cannot send command:', method);
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('subscribeToStream', stream);
+
+      console.log(streamName);
     }
   }
 
-  subscribeToStreams(streams: string[]): void {
-    this.sendCommand('SUBSCRIBE', streams);
-  }
-
-  unsubscribeFromStreams(streams: string[]): void {
-    this.sendCommand('UNSUBSCRIBE', streams);
+  unsubscribeFromStream(streamName: string): void {
+    const stream = streamName.toLowerCase();
+    this.activeStreams.delete(stream);
+    if (this.socket && this.socket.connected) {
+      this.socket.emit('unsubscribeFromStream', stream);
+      console.log(`Requested unsubscribe from stream: ${stream}`);
+    }
   }
 
   disconnect(): void {
-    if (this.socket$) {
-      this.socket$.complete();
+    if (this.socket) {
+      this.socket.disconnect();
       this.connectionStatus$.next(false);
-      this.socket$ = null;
+      this.socket = null;
+      this.activeStreams.clear();
     }
+  }
+
+  ngOnDestroy(): void {
+    this.disconnect();
   }
 }
