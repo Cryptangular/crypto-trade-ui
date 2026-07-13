@@ -1,2 +1,6 @@
-<h2>Current token {{pair()}}</h2>
-<stx-price-chart />
+@let state = tradePageService.pageState();
+
+<section class="stx-trade-page">
+  <stx-trade-page-header [priceChange]="state.priceChange" [tradePairName]="pair() | cryptoPairPipe " />
+  <stx-price-chart [klinesData]="state.klines" (intervalChange)="tradePageService.updateInterval($event)" />
+</section>

@@ -1,8 +1,19 @@
 @use 'fonts';
 
+// border-radius tokens
+$stx-radius-none: 0;
+$stx-radius-xs: 2px;
+$stx-radius-sm: 4px;
+$stx-radius-md: 8px;
+$stx-radius-lg: 12px;
+$stx-radius-xl: 16px;
+$stx-radius-full: 9999px;
+
 // sizes
-$stx-btn-radius: 8px;
-$stx-checkbox-radius: 4px;
+$stx-btn-radius: $stx-radius-md;
+$stx-checkbox-radius: $stx-radius-sm;
+$stx-card-radius: $stx-radius-lg;
+$stx-modal-radius: $stx-radius-xl;
 
 // typography
 $base-font-family: 'Saira Semi Condensed';

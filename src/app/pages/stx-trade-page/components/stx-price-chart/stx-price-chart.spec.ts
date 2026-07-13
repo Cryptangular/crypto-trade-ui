@@ -18,14 +18,14 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of } from 'rxjs';
 import { StxPriceChart } from './stx-price-chart';
 import { StxTradeApiService } from '../../services/stx-trade-api-service';
-import { CandlestickData } from '../../models/stx-trade-model';
+import { KlineData } from '../../models/stx-trade-model';
 
 describe('StxPriceChart', () => {
   let component: StxPriceChart;
   let fixture: ComponentFixture<StxPriceChart>;
 
   const tradeApiMock = {
-    getHistoricalKlines: (): Observable<CandlestickData[]> => of([]),
+    getHistoricalKlines: (): Observable<KlineData[]> => of([]),
   };
 
   beforeEach(async () => {
