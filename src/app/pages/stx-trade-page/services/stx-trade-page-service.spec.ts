@@ -16,9 +16,14 @@ describe('StxTradePageService', () => {
         {
           provide: WebSocketService,
           useValue: {
+            tradeStream$: new Subject<unknown>(),
+            connectionStatus$: of(true),
+
             messages$: new Subject<unknown>(),
             connect: (): void => {},
             disconnect: (): void => {},
+            subscribeToStream: (): void => {},
+            unsubscribeFromStream: (): void => {},
             subscribeToStreams: (): void => {},
             unsubscribeFromStreams: (): void => {},
           },
